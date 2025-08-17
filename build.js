@@ -142,9 +142,9 @@ function generateAboutHTML(page) {
                     <p>When I'm not behind the camera, you can find me exploring new locations and experimenting with different lighting techniques.</p>
                     <p>📷 You can also see more of my work on <a href="https://www.google.com/maps/contrib/110279442478436443087/photos" target="_blank" rel="noopener noreferrer">Google Maps</a>.</p>
                 </div>
-                <div class="about-text">
-                    <iframe src="https://kit.co/embed?url=https%3A%2F%2Fkit.co%2Fplushka%2Fplushka-s-photo-kit" style="display: block; border: 0px; margin: 0 auto; width: 100%; height: 100vw; max-width: 800px; max-height: 700px" scrolling="no"></iframe>
-                </div>
+            </div>
+            <div class="about-content">
+                <iframe src="https://kit.co/embed?url=https%3A%2F%2Fkit.co%2Fplushka%2Fplushka-s-photo-kit" style="display: block; border: 0px; margin: 0 auto; width: 100%; height: 100vw; max-width: 800px; max-height: 700px" scrolling="no"></iframe>
             </div>`;
 }
 
