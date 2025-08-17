@@ -143,7 +143,10 @@ function generateAboutHTML(page) {
                     <p>📷 You can also see more of my work on <a href="https://www.google.com/maps/contrib/110279442478436443087/photos" target="_blank" rel="noopener noreferrer">Google Maps</a>.</p>
                 </div>
             </div>
-            <div class="about-content">
+            <div class="about-content" style="gap: 0; padding: 0;">
+                <h2>My Gear Essentials</h2>
+            </div>
+            <div class="about-content" style="gap: 0; padding: 0;">
                 <iframe src="https://kit.co/embed?url=https%3A%2F%2Fkit.co%2Fplushka%2Fplushka-s-photo-kit" style="display: block; border: 0px; margin: 0 auto; width: 100%; height: 100vw; max-width: 800px; max-height: 700px" scrolling="no"></iframe>
             </div>`;
 }
