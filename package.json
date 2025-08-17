@@ -1,0 +1,28 @@
+{
+  "name": "mary-rytikova-portfolio",
+  "version": "1.0.0",
+  "description": "Static portfolio website generator",
+  "main": "build.js",
+  "scripts": {
+    "build": "node build.js",
+    "build:force": "rm -rf build/photos && node build.js",
+    "dev": "node build.js && node server.js",
+    "serve": "node server.js",
+    "start": "node server.js",
+    "clean": "rm -rf build"
+  },
+  "keywords": [
+    "portfolio",
+    "static",
+    "generator"
+  ],
+  "author": "Mary Rytikova",
+  "license": "MIT",
+  "dependencies": {
+    "sharp": "^0.32.6"
+  },
+  "devDependencies": {
+    "clean-css-cli": "^5.6.3",
+    "terser": "^5.43.1"
+  }
+}

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mary Rytikova</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#2c3e50">
+    
+    <link rel="stylesheet" href="/styles.css?v=CSS_HASH">
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-container">
+            <a href="/#index" class="logo" data-page="index">Mary Rytikova</a>
+            <h2 class="header-page-title">PAGE_TITLE</h2>
+            <nav>
+                <ul class="nav-menu">
+                    NAVIGATION_PLACEHOLDER
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <div id="page-content">
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="newsletter-section" style="display: none;">
+                <h3 class="newsletter-title">Get notified with new materials</h3>
+                <form class="newsletter-form">
+                    <input type="email" class="newsletter-input" placeholder="Email Address" required>
+                    <button type="submit" class="newsletter-button">SUBSCRIBE</button>
+                </form>
+            </div>
+
+            <div class="contact-info">
+                <p>Contact: <a href="mailto:hello@plushka.se">hello@plushka.se</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <div id="lightbox" class="lightbox">
+        <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+        <div class="lightbox-content">
+            <img id="lightbox-img" src="" alt="Lightbox Image">
+        </div>
+        <div class="lightbox-nav lightbox-prev" onclick="previousImage(event)">&#10094;</div>
+        <div class="lightbox-nav lightbox-next" onclick="nextImage(event)">&#10095;</div>
+    </div>
+
+    <script src="/script.js?v=JS_HASH"></script>
+</body>
+
+</html> 

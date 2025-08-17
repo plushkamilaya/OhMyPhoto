@@ -1,0 +1,122 @@
+name: Deploy to Cloudflare Pages
+
+on:
+  push:
+  workflow_dispatch:
+    inputs:
+      deploy_production:
+        description: 'Deploy to production?'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  build:
+    name: 📸 Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
+
+      - name: Build and create summary
+        id: build-step
+        run: |
+          if [ -z "${GITHUB_STEP_SUMMARY:-}" ]; then
+            echo "GITHUB_STEP_SUMMARY is not set"; exit 1
+          fi
+
+          {
+            echo "## 💻 Build"
+            echo '```bash'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          npm run build 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          build_exit_code=${PIPESTATUS[0]}
+          
+          {
+            echo '```'
+            echo
+            echo "## 📊 Deployment Info"
+            echo "**Deployment Time:** $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+            echo "**Branch:** ${{ github.ref_name }}"
+            echo "**Commit:** [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})"
+            echo "**Build Status:** $([ $build_exit_code -eq 0 ] && echo '✅ Success' || echo '❌ Failed')"
+            echo
+          } >> "$GITHUB_STEP_SUMMARY"
+          
+          echo "build_success=$([ $build_exit_code -eq 0 ] && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
+          echo "build_exit_code=$build_exit_code" >> $GITHUB_OUTPUT
+          
+          if [ $build_exit_code -ne 0 ]; then
+            exit $build_exit_code
+          fi
+
+      - name: Check build directory
+        if: steps.build-step.outputs.build_success == 'true'
+        run: |
+          if [ ! -d "build" ]; then
+            echo "❌ Build directory not found. Build process may have failed."
+            exit 1
+          fi
+          echo "✅ Build directory found, proceeding with deployment"
+
+
+      - name: Deploy to Preview
+        if: github.event.inputs.deploy_production != 'true' && steps.build-step.outputs.build_success == 'true'
+        id: deploy-preview
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: ${{ vars.CLOUDFLARE_PROJECT_NAME }}
+          directory: build
+          wranglerVersion: 4
+          branch: preview-${{ github.run_id }}
+
+      - name: Create preview deployment summary
+        if: steps.deploy-preview.outcome == 'success' && steps.build-step.outputs.build_success == 'true'
+        run: |
+          {
+            echo "## 🚀 Preview Deployment"
+            echo "Preview deployed successfully."
+            echo
+            echo "- To deploy to production, open **Actions → Deploy to Cloudflare Pages**"
+            echo "- Click **Run workflow** and set **Deploy to production? = true**"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+
+      - name: Deploy to Production
+        if: github.event.inputs.deploy_production == 'true' && steps.build-step.outputs.build_success == 'true'
+        id: deploy-production
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: ${{ vars.CLOUDFLARE_PROJECT_NAME }}
+          directory: build
+          wranglerVersion: 4
+          branch: main
+
+      - name: Create production deployment summary
+        if: steps.deploy-production.outcome == 'success' && steps.build-step.outputs.build_success == 'true'
+        run: |
+          {
+            echo "## ✅ Production Deployment"
+            echo "Production deployment completed successfully!"
+            echo "**URL:** [${{ vars.WEBSITE_URL }}](${{ vars.WEBSITE_URL }})"
+          } >> "$GITHUB_STEP_SUMMARY"
