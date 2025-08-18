@@ -6,7 +6,7 @@ A modern, responsive photography portfolio website built as a Single Page Applic
 
 - **Single Page Application** - Seamless navigation without page reloads
 - **Responsive Design** - Optimized for all devices and screen sizes
-- **Image Optimization** - Automatic generation of previews and full-size images
+- **Image Optimization** - Automatic generation of previews and full-size images with hash-based versioning
 - **Lightbox Gallery** - Interactive image viewing with navigation
 - **Hash-based Routing** - Direct links to pages and specific images
 - **Performance Optimized** - Lazy loading, minified assets, and efficient caching
@@ -21,7 +21,7 @@ A modern, responsive photography portfolio website built as a Single Page Applic
 ```bash
 # Clone the repository
 git clone <repository-url>
-cd photos
+cd OhMyPhoto
 
 # Install dependencies
 npm install
@@ -36,23 +36,24 @@ open build/index.html
 ## 📁 Project Structure
 
 ```
-photos/
+OhMyPhoto/
 ├── template.html          # SPA template
 ├── script.js             # SPA JavaScript logic
 ├── styles.css            # Main stylesheet
 ├── build.js              # Build configuration
+├── pages.js              # Page configuration
 ├── package.json          # Node.js configuration
 ├── photos/               # Source images
-│   ├── H58A0655.jpg
-│   ├── H58A0738.jpg
+│   ├── ES7A3625.JPG
+│   ├── ES7A6160.JPG
 │   └── ...
 ├── build/                # Generated website (after build)
 │   ├── index.html        # Complete SPA website
 │   ├── script.js         # Minified JavaScript
 │   ├── styles.css        # Minified CSS
 │   └── photos/           # Optimized images
-│       ├── H58A0655.jpg           # Full-size version
-│       ├── preview_H58A0655.jpg   # Thumbnail
+│       ├── ES7A3625.JPG           # Full-size version
+│       ├── preview_ES7A3625.JPG   # Thumbnail
 │       └── ...
 └── README.md             # This file
 ```
@@ -75,7 +76,7 @@ npm run open
 
 ## 🎨 Page Configuration
 
-Configure your portfolio pages in `build.js`:
+Configure your portfolio pages in `pages.js`:
 
 ```javascript
 const pages = [
@@ -84,29 +85,51 @@ const pages = [
         title: null,             // null for homepage (no title)
         template: 'gallery',     // Template type
         images: [
-            { 
-                src: './photos/H58A0655.jpg', 
-                name: 'H58A0655', 
-                alt: 'Portrait photography' 
-            }
+            'ES7A3625.JPG',
+            'ES7A6160.JPG',
+            'ES7A6143.JPG'
+            // ... more images
         ]
     },
     {
-        name: 'things',
-        title: 'Things',
+        name: 'Restaurants',
+        title: 'Restaurants',
         template: 'gallery',
-        images: [/* your images */]
+        images: [
+            'ES7A6101.JPG',
+            'ES7A6118.JPG',
+            'ES7A6137-1.jpg'
+            // ... more images
+        ]
+    },
+    {
+        name: 'Kids',
+        title: 'Kids',
+        template: 'gallery',
+        images: [
+            'IMG_2433.JPG',
+            'IMG_2724.JPG',
+            'IMG_3408.jpg'
+            // ... more images
+        ]
+    },
+    {
+        name: 'places',
+        title: 'Places',
+        template: 'gallery',
+        images: [
+            'ES7A3178.JPG',
+            'ES7A3332-1.jpg',
+            'ES7A2999.jpg'
+            // ... more images
+        ]
     },
     {
         name: 'about',
         title: 'About',
         template: 'about',
         images: [
-            { 
-                src: './photos/mary-rytikova-photo.jpg', 
-                name: 'about-photo', 
-                alt: 'Mary Rytikova portrait' 
-            }
+            'mary-rytikova-photo.jpg'
         ]
     }
 ];
@@ -114,15 +137,29 @@ const pages = [
 
 ## 🖼️ Image Configuration
 
-Each image requires three properties:
+Images are now configured as simple filename strings in the `images` array:
 
 ```javascript
-{
-    src: './photos/image.jpg',     // Source file path
-    name: 'unique-name',           // Unique identifier for lightbox
-    alt: 'Description'             // Alt text for accessibility
-}
+// Old format (no longer used):
+// {
+//     src: './photos/image.jpg',
+//     name: 'unique-name',
+//     alt: 'Description'
+// }
+
+// New format:
+images: [
+    'ES7A3625.JPG',
+    'ES7A6160.JPG',
+    'IMG_2433.JPG'
+]
 ```
+
+The build system automatically:
+- Generates preview thumbnails (max 1000x1000px, 85% quality)
+- Creates optimized full-size versions (95% quality)
+- Adds hash-based versioning for cache busting
+- Handles all image processing automatically
 
 ## 🎯 Available Templates
 
@@ -131,33 +168,38 @@ Each image requires three properties:
 - Interactive lightbox with navigation
 - Optimized thumbnails for fast loading
 - Keyboard navigation support
+- Touch-friendly swipe gestures
 
 ### About Template (`about`)
 - Author portrait display
-- Text content area
+- Text content area with personal information
+- Gear showcase with Kit.co integration
 - Responsive design
 
 ## ⚡ Image Optimization
 
-The build system automatically creates two versions of each image:
+The build system automatically creates two versions of each image with hash-based versioning:
 
 ### Thumbnails
 - **Size**: Max 1000x1000px
 - **Quality**: 85%
 - **Format**: JPEG
 - **Usage**: Gallery display
+- **Versioning**: Automatic hash-based cache busting
 
 ### Full-size Images
 - **Size**: Original dimensions
 - **Quality**: 95%
 - **Format**: JPEG
 - **Usage**: Lightbox viewing
+- **Versioning**: Automatic hash-based cache busting
 
 ### Example Optimization
 ```
-Original: H58A0655.jpg (1.3MB)
-Thumbnail: preview_H58A0655.jpg (189KB) - 7x smaller!
-Full-size: H58A0655.jpg (1.3MB) - for lightbox
+Original: ES7A3625.JPG (2.1MB)
+Thumbnail: preview_ES7A3625.JPG (245KB) - 8.5x smaller!
+Full-size: ES7A3625.JPG (2.1MB) - for lightbox
+Versioned URLs: /photos/preview_ES7A3625.JPG?v=a1b2c3d4
 ```
 
 ## 🌐 Navigation & Routing
@@ -165,28 +207,26 @@ Full-size: H58A0655.jpg (1.3MB) - for lightbox
 The SPA uses hash-based routing for instant navigation:
 
 - **Home** → `#index` (or `/`)
-- **Things** → `#things`
-- **People** → `#people`
+- **Restaurants** → `#Restaurants`
+- **Kids** → `#Kids`
 - **Places** → `#places`
 - **About** → `#about`
 
 ### Direct Image Links
-- `#things?image=H58A0655` - Opens specific image in lightbox
+- `#Restaurants?image=ES7A6101` - Opens specific image in lightbox
 
 ## 🔧 Adding New Pages
 
-1. **Configure the page** in `build.js`:
+1. **Configure the page** in `pages.js`:
 ```javascript
 {
     name: 'new-page',
     title: 'New Page',
     template: 'gallery', // or 'about'
     images: [
-        { 
-            src: './photos/image1.jpg', 
-            name: 'image1', 
-            alt: 'Description' 
-        }
+        'image1.jpg',
+        'image2.jpg',
+        'image3.jpg'
     ]
 }
 ```
@@ -279,7 +319,7 @@ npx serve build/
 - **Mobile-first design** - Optimized for all screen sizes
 - **Adaptive navigation** - Collapsible menu on mobile
 - **Responsive gallery** - Grid adjusts from 4 to 2 columns
-- **Touch-friendly** - Optimized for mobile interactions
+- **Touch-friendly** - Optimized for mobile interactions with swipe gestures
 - **Fast loading** - Optimized images and assets
 
 ## ⚡ Performance Features
@@ -287,7 +327,7 @@ npx serve build/
 - **Lazy loading** - Images load as needed
 - **Asset minification** - CSS and JavaScript optimization
 - **Image optimization** - Automatic compression and resizing
-- **Versioned files** - Efficient caching with automatic updates
+- **Hash-based versioning** - Efficient caching with automatic cache busting
 - **Lightweight** - Minimal dependencies and optimized code
 
 ## 🔍 SEO & Accessibility
