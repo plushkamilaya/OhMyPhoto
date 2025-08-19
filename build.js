@@ -139,10 +139,10 @@ function generateAboutHTML(page) {
                     <img src="${PHOTOS_PATH}/${aboutPhoto}${aboutPhotoHash ? `?v=${aboutPhotoHash}` : ''}" alt="${page.title ? page.title + ' photography' : 'Photography'}">
                 </div>
                 <div class="about-text">
-                    <p>I'm a photographer based in Täby. I specialize in capturing authentic moments that tell compelling stories.</p>
-                    <p>My work spans across various genres including portrait photography, event coverage, and commercial projects. I believe that every photograph should not only capture a moment but also evoke emotion and create a lasting connection.</p>
-                    <p>When I'm not behind the camera, you can find me exploring new locations and experimenting with different lighting techniques.</p>
-                    <p>📷 You can also see more of my work on <a href="https://www.google.com/maps/contrib/110279442478436443087/photos" target="_blank" rel="noopener noreferrer">Google Maps</a>.</p>
+                    <p>I’m a photographer from Täby. I love to notice when everything suddenly comes together in one perfect frame, but I also enjoy imagining stories in advance, thinking about the people, the mood, and how the photos will connect with each other.</p>
+                    <p>Before a shoot, I often create mood boards with ideas — not to follow them strictly, but to get into the right mood and let ideas flow. It’s my way of making sure every session has its own special moments, even though those unexpected “magic shots” almost always appear on their own.</p>
+                    <p>Whether it’s portraits, events or commercial projects, I always look for authenticity and emotions. For me, a good photograph is one that you can feel, not just see.</p>
+                    <p>📷 You can see more of my work on <a href="https://www.google.com/maps/contrib/110279442478436443087/photos" target="_blank" rel="noopener noreferrer">Google Maps</a>.</p>
                 </div>
             </div>
             <div class="about-content" style="gap: 0; padding-top: 30px;">
