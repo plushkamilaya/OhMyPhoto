@@ -131,23 +131,25 @@ function generateAboutHTML(page) {
         getFileHash(path.join(buildDir, `${PHOTOS_PATH}/${aboutPhoto}`)) : '';
         
     return `
+            <div class="about-content" style="gap: 0; padding-top: 40px;">
+                <h2>Hello, I'm Maria</h2>
+            </div>
             <div class="about-content">
                 <div class="about-photo">
                     <img src="${PHOTOS_PATH}/${aboutPhoto}${aboutPhotoHash ? `?v=${aboutPhotoHash}` : ''}" alt="${page.title ? page.title + ' photography' : 'Photography'}">
                 </div>
                 <div class="about-text">
-                    <h2>Hello, I'm Mary Rytikova</h2>
                     <p>I'm a photographer based in Täby. I specialize in capturing authentic moments that tell compelling stories.</p>
                     <p>My work spans across various genres including portrait photography, event coverage, and commercial projects. I believe that every photograph should not only capture a moment but also evoke emotion and create a lasting connection.</p>
                     <p>When I'm not behind the camera, you can find me exploring new locations and experimenting with different lighting techniques.</p>
                     <p>📷 You can also see more of my work on <a href="https://www.google.com/maps/contrib/110279442478436443087/photos" target="_blank" rel="noopener noreferrer">Google Maps</a>.</p>
                 </div>
             </div>
-            <div class="about-content" style="gap: 0; padding: 0;">
+            <div class="about-content" style="gap: 0;">
                 <h2>My Gear Essentials</h2>
             </div>
-            <div class="about-content" style="gap: 0; padding: 0;">
-                <iframe src="https://kit.co/embed?url=https%3A%2F%2Fkit.co%2Fplushka%2Fplushka-s-photo-kit" style="display: block; border: 0px; margin: 0 auto; width: 100%; height: 100vw; max-width: 800px; max-height: 700px" scrolling="no"></iframe>
+            <div class="about-content" style="gap: 0;">
+                <iframe src="https://kit.co/embed?url=https%3A%2F%2Fkit.co%2Fplushka%2Fplushka-s-photo-kit" style="display: block; border: 0px; margin: 0 auto; width: 100%; height: 100vw; max-width: 1200px; max-height: 700px" scrolling="no"></iframe>
             </div>`;
 }
 
