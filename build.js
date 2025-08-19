@@ -149,7 +149,7 @@ function generateAboutHTML(page) {
                 <h2>My Gear Essentials</h2>
             </div>
             <div class="about-content" style="gap: 0;">
-                <iframe src="https://kit.co/embed?url=https%3A%2F%2Fkit.co%2Fplushka%2Fplushka-s-photo-kit" style="display: block; border: 0px; margin: 0 auto; width: 100%; height: 100vw; max-width: 1200px; max-height: 700px" scrolling="no"></iframe>
+                <iframe src="https://kit.co/embed?url=https%3A%2F%2Fkit.co%2Fplushka%2Fplushka-s-photo-kit" style="display: block; border: 0px; margin: 0 auto; width: 100%; height: 100vw; max-width: 1160px; max-height: 1160px" scrolling="no"></iframe>
             </div>`;
 }
 
