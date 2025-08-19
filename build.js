@@ -145,7 +145,7 @@ function generateAboutHTML(page) {
                     <p>📷 You can also see more of my work on <a href="https://www.google.com/maps/contrib/110279442478436443087/photos" target="_blank" rel="noopener noreferrer">Google Maps</a>.</p>
                 </div>
             </div>
-            <div class="about-content" style="gap: 0;">
+            <div class="about-content" style="gap: 0; padding-top: 30px;">
                 <h2>My Gear Essentials</h2>
             </div>
             <div class="about-content" style="gap: 0;">
