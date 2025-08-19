@@ -136,7 +136,7 @@ function generateAboutHTML(page) {
                     <img src="${PHOTOS_PATH}/${aboutPhoto}${aboutPhotoHash ? `?v=${aboutPhotoHash}` : ''}" alt="${page.title ? page.title + ' photography' : 'Photography'}">
                 </div>
                 <div class="about-text">
-                    <h2>Hello, I'm Mary Rytikova</h2>
+                    <h2>Hello, I'm Maria</h2>
                     <p>I’m a photographer from Täby. I love to notice when everything suddenly comes together in one perfect frame, but I also enjoy imagining stories in advance, thinking about the people, the mood, and how the photos will connect with each other.</p>
                     <p>Before a shoot, I often create mood boards with ideas — not to follow them strictly, but to get into the right mood and let ideas flow. It’s my way of making sure every session has its own special moments, even though those unexpected “magic shots” almost always appear on their own.</p>
                     <p>Whether it’s portraits, events or commercial projects, I always look for authenticity and emotions. For me, a good photograph is one that you can feel, not just see.</p>
