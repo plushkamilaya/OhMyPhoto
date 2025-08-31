@@ -36,19 +36,6 @@ async function optimizeImage(inputPath, outputPath, maxSize = 1000) {
     }
 }
 
-async function copyImage(inputPath, outputPath) {
-    try {
-        await sharp(inputPath)
-            .jpeg({ quality: 95 })
-            .toFile(outputPath);
-
-        return true
-    } catch (error) {
-        console.error(`Error copying ${inputPath}:`, error.message);
-        return false;
-    }
-}
-
 async function processImages() {
     const allImages = new Set();
     
@@ -82,7 +69,7 @@ async function processImages() {
             if (fs.existsSync(fullPath)) {
                 // Full version already exists, skip
             } else {
-                const fullSuccess = await copyImage(inputPath, fullPath);
+                const fullSuccess = await optimizeImage(inputPath, fullPath, 3000);
                 if (!fullSuccess) {
                     hasErrors = true;
                     errors.push(`Failed to copy full version for ${filename}`);
