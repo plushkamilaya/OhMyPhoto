@@ -4,10 +4,11 @@ const pages = [
         title: null,
         template: 'gallery',
         images: [
-            'ES7A3625.JPG',
-            'ES7A6160.JPG',
+            'ES7A6137-1.jpg'
             'ES7A6143.JPG',
             'ES7A3590.JPG',
+            'IMG_6213.JPG',
+            'ES7A3612-1.jpg',
             'ES7A3168-1.jpg',
             'IMG_3408.jpg',
             'IMG_6146.jpg',
@@ -15,10 +16,9 @@ const pages = [
             'ES7A2999.jpg',
             'IMG_2724.JPG',
             'IMG_4172-1.jpg',
-            'ES7A6137-1.jpg',
-            'IMG_6213.JPG',
-            'ES7A3612-1.jpg',
             'IMG_2433.JPG',
+            'ES7A3625.JPG',
+            'ES7A6160.JPG',
             'ES7A3178.JPG'
         ]
     },
