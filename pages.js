@@ -4,7 +4,7 @@ const pages = [
         title: null,
         template: 'gallery',
         images: [
-            'ES7A6137-1.jpg'
+            'ES7A6137-1.jpg',
             'ES7A6143.JPG',
             'ES7A3590.JPG',
             'IMG_6213.JPG',
