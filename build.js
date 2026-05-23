@@ -8,6 +8,10 @@ const PHOTOS_PATH = '/photos';
 
 const pages = require('./pages');
 
+function imgSrc(image) {
+    return typeof image === 'string' ? image : image.src;
+}
+
 const buildDir = './build';
 const buildPhotosDir = './build/photos';
 
@@ -42,7 +46,7 @@ async function processImages() {
     pages.forEach(page => {
         if (page.images && page.images.length > 0) {
             page.images.forEach(img => {
-                allImages.add(img);
+                allImages.add(imgSrc(img));
             });
         }
     });
@@ -96,18 +100,21 @@ function generateGalleryHTML(images, page) {
     }
 
     return images.map(image => {
-        const filename = path.basename(image);
+        const src = imgSrc(image);
+        const filename = path.basename(src);
         const previewSrc = `${PHOTOS_PATH}/preview_${filename}`;
         const fullSrc = `${PHOTOS_PATH}/${filename}`;
-        
-        const previewHash = fs.existsSync(path.join(buildDir, previewSrc)) ? 
+
+        const previewHash = fs.existsSync(path.join(buildDir, previewSrc)) ?
             getFileHash(path.join(buildDir, previewSrc)) : '';
-        const fullHash = fs.existsSync(path.join(buildDir, fullSrc)) ? 
+        const fullHash = fs.existsSync(path.join(buildDir, fullSrc)) ?
             getFileHash(path.join(buildDir, fullSrc)) : '';
 
+        const wideClass = image.wide ? ' gallery-item--wide' : '';
+
         return `
-                <div class="gallery-item">
-                    <img src="${previewSrc}${previewHash ? `?v=${previewHash}` : ''}" data-img-name="${image}" data-full-src="${fullSrc}${fullHash ? `?v=${fullHash}` : ''}" alt="${page.title ? page.title + ' photography' : 'Photography'}">
+                <div class="gallery-item${wideClass}">
+                    <img src="${previewSrc}${previewHash ? `?v=${previewHash}` : ''}" data-img-name="${src}" data-full-src="${fullSrc}${fullHash ? `?v=${fullHash}` : ''}" alt="${page.title ? page.title + ' photography' : 'Photography'}">
                 </div>`;
     }).join('');
 }
@@ -171,20 +178,21 @@ function generateAllSiteImages() {
 
     pages.forEach(page => {
         page.images.forEach(image => {
-            if (!allImages.has(image)) {
-                const originalExtension = path.extname(image);
-                const previewPath = `${PHOTOS_PATH}/preview_${path.basename(image, originalExtension)}${originalExtension}`;
-                const fullPath = `${PHOTOS_PATH}/${path.basename(image, originalExtension)}${originalExtension}`;
-                
-                const previewHash = fs.existsSync(path.join(buildDir, previewPath)) ? 
+            const src = imgSrc(image);
+            if (!allImages.has(src)) {
+                const originalExtension = path.extname(src);
+                const previewPath = `${PHOTOS_PATH}/preview_${path.basename(src, originalExtension)}${originalExtension}`;
+                const fullPath = `${PHOTOS_PATH}/${path.basename(src, originalExtension)}${originalExtension}`;
+
+                const previewHash = fs.existsSync(path.join(buildDir, previewPath)) ?
                     getFileHash(path.join(buildDir, previewPath)) : '';
-                const fullHash = fs.existsSync(path.join(buildDir, fullPath)) ? 
+                const fullHash = fs.existsSync(path.join(buildDir, fullPath)) ?
                     getFileHash(path.join(buildDir, fullPath)) : '';
-                
-                allImages.set(image, {
+
+                allImages.set(src, {
                     preview: `${previewPath}${previewHash ? `?v=${previewHash}` : ''}`,
                     full: `${fullPath}${fullHash ? `?v=${fullHash}` : ''}`,
-                    name: path.basename(image, originalExtension),
+                    name: path.basename(src, originalExtension),
                     alt: page.title ? page.title + ' photography' : 'Photography'
                 });
             }
@@ -202,20 +210,21 @@ function generateAllSiteImagesJson() {
 
     pages.forEach(page => {
         page.images.forEach(image => {
-            if (!allImages.has(image)) {
-                const originalExtension = path.extname(image);
-                const previewPath = `${PHOTOS_PATH}/preview_${path.basename(image, originalExtension)}${originalExtension}`;
-                const fullPath = `${PHOTOS_PATH}/${path.basename(image, originalExtension)}${originalExtension}`;
-                
-                const previewHash = fs.existsSync(path.join(buildDir, previewPath)) ? 
+            const src = imgSrc(image);
+            if (!allImages.has(src)) {
+                const originalExtension = path.extname(src);
+                const previewPath = `${PHOTOS_PATH}/preview_${path.basename(src, originalExtension)}${originalExtension}`;
+                const fullPath = `${PHOTOS_PATH}/${path.basename(src, originalExtension)}${originalExtension}`;
+
+                const previewHash = fs.existsSync(path.join(buildDir, previewPath)) ?
                     getFileHash(path.join(buildDir, previewPath)) : '';
-                const fullHash = fs.existsSync(path.join(buildDir, fullPath)) ? 
+                const fullHash = fs.existsSync(path.join(buildDir, fullPath)) ?
                     getFileHash(path.join(buildDir, fullPath)) : '';
-                
-                allImages.set(image, {
+
+                allImages.set(src, {
                     preview: `${previewPath}${previewHash ? `?v=${previewHash}` : ''}`,
                     full: `${fullPath}${fullHash ? `?v=${fullHash}` : ''}`,
-                    name: path.basename(image, originalExtension),
+                    name: path.basename(src, originalExtension),
                     alt: page.title ? page.title + ' photography' : 'Photography'
                 });
             }
@@ -277,7 +286,7 @@ function checkUnusedPhotos() {
     pages.forEach(page => {
         if (page.images && page.images.length > 0) {
             page.images.forEach(img => {
-                const filename = path.basename(img);
+                const filename = path.basename(imgSrc(img));
                 usedPhotos.add(filename);
             });
         }
