@@ -110,7 +110,8 @@ function generateGalleryHTML(images, page) {
         const fullHash = fs.existsSync(path.join(buildDir, fullSrc)) ?
             getFileHash(path.join(buildDir, fullSrc)) : '';
 
-        const wideClass = image.wide ? ' gallery-item--wide' : '';
+        const wideSpan = typeof image.wide === 'number' ? image.wide : (image.wide ? 2 : 0);
+        const wideClass = wideSpan > 1 ? ` gallery-item--wide-${wideSpan}` : '';
 
         return `
                 <div class="gallery-item${wideClass}">
