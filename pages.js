@@ -32,7 +32,7 @@ const pages = [
             'ES7A6137-1.jpg',
             'ES7A6120.JPG',
             'ES7A4271-3.jpg',
-            { src: 'ES7A3590.JPG', wide: 3 },
+            { src: 'ES7A3590.JPG', wide: 2 },
             'ES7A6143.JPG',
             'ES7A6160.JPG',
             'ES7A3612-1.jpg',
