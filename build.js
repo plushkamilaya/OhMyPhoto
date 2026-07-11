@@ -120,6 +120,61 @@ function generateGalleryHTML(images, page) {
     }).join('');
 }
 
+const gearDir = './gear';
+
+function gearOutputName(image) {
+    return `gear_${path.basename(image, path.extname(image))}.jpg`;
+}
+
+async function processGearImages() {
+    const allGearImages = new Set();
+
+    pages.forEach(page => {
+        if (page.gear && page.gear.length > 0) {
+            page.gear.forEach(item => {
+                if (item.image) {
+                    allGearImages.add(item.image);
+                }
+            });
+        }
+    });
+
+    const errors = [];
+
+    for (const filename of allGearImages) {
+        const inputPath = path.join(gearDir, filename);
+        const outputPath = path.join(buildPhotosDir, gearOutputName(filename));
+
+        if (!fs.existsSync(inputPath)) {
+            errors.push(`Missing gear image: ${inputPath}`);
+            continue;
+        }
+
+        if (fs.existsSync(outputPath)) {
+            continue;
+        }
+
+        try {
+            await sharp(inputPath)
+                .resize(600, 600, {
+                    fit: 'inside',
+                    withoutEnlargement: true
+                })
+                .flatten({ background: '#ffffff' })
+                .jpeg({ quality: 85 })
+                .toFile(outputPath);
+        } catch (error) {
+            errors.push(`Error processing gear image ${filename}: ${error.message}`);
+        }
+    }
+
+    if (errors.length > 0) {
+        console.error('❌ Build failed due to gear image errors:');
+        errors.forEach(error => console.error(`  - ${error}`));
+        process.exit(1);
+    }
+}
+
 function generateAboutHTML(page) {
     const aboutPhoto = page.images[0];
     const aboutPhotoHash = fs.existsSync(path.join(buildDir, `${PHOTOS_PATH}/${aboutPhoto}`)) ? 
@@ -144,8 +199,37 @@ function generateAboutHTML(page) {
                 <h2>My Gear Essentials</h2>
             </div>
             <div class="about-content" style="gap: 0;">
-                <iframe src="https://kit.co/embed?url=https%3A%2F%2Fkit.co%2Fplushka%2Fplushka-s-photo-kit" style="display: block; border: 0px; margin: 0 auto; width: 100%; height: 100vw; max-width: 1160px; max-height: 1160px" scrolling="no"></iframe>
+                <div class="gear-grid">${generateGearHTML(page.gear)}
+                </div>
             </div>`;
+}
+
+function generateGearHTML(gear) {
+    if (!gear || gear.length === 0) {
+        return '';
+    }
+
+    return gear.map(item => {
+        const name = item.url
+            ? `<a href="${item.url}" target="_blank" rel="noopener noreferrer">${item.name}</a>`
+            : item.name;
+
+        let photo = '';
+        if (item.image) {
+            const outputName = gearOutputName(item.image);
+            const outputPath = path.join(buildPhotosDir, outputName);
+            const hash = fs.existsSync(outputPath) ? getFileHash(outputPath) : '';
+            photo = `
+                        <img src="${PHOTOS_PATH}/${outputName}${hash ? `?v=${hash}` : ''}" alt="${item.name}" loading="lazy">`;
+        }
+
+        return `
+                    <div class="gear-item">${photo}
+                        <span class="gear-category">${item.category}</span>
+                        <h3 class="gear-name">${name}</h3>
+                        <p>${item.description}</p>
+                    </div>`;
+    }).join('');
 }
 
 
@@ -379,6 +463,7 @@ async function build() {
     }
 
     await processImages();
+    await processGearImages();
 
 
     minifyCSS('./styles.css', path.join(buildDir, 'styles.css'));
