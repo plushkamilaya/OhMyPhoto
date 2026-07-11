@@ -80,7 +80,7 @@ const pages = [
                 name: 'Canon EOS R6',
                 image: 'canon-eos-r6.jpg',
                 url: 'https://www.canon-europe.com/cameras/eos-r6/',
-                description: 'My main full-frame camera body.'
+                description: 'My main full-frame camera body. Fast, precise autofocus and in-body stabilisation deliver sharp, clean images even in low light — so no moment gets lost.'
             },
             {
                 category: 'Lens',
@@ -104,11 +104,18 @@ const pages = [
                 description: 'My go-to lenses for people, food, and details. Lightweight, fast, and easy to carry all day — yet they deliver glossy, cinematic results.'
             },
             {
-                category: 'Second setup',
-                name: 'Canon EOS R6 + EF 24-70mm f/2.8L II USM',
+                category: 'Second camera',
+                name: 'Canon EOS 6D',
+                image: 'canon-eos-6d.jpg',
+                url: 'https://www.canon-europe.com/for_home/product_finder/cameras/digital_slr/eos_6d/',
+                description: 'A reliable, time-proven full-frame camera for when a second body is needed. It has never let me down — always ready to back up the main setup with the same true Canon colours.'
+            },
+            {
+                category: 'Lens',
+                name: 'Canon EF 24-70mm f/2.8L II USM',
                 image: 'canon-ef-24-70.jpg',
                 url: 'https://www.canon-europe.com/lenses/ef-24-70mm-f-2-8l-ii-usm-lens/',
-                description: 'My trusted combo for when a second setup is needed. Always ready to support — sharp, dependable, and proven over time.'
+                description: 'The trusted companion to the 6D: a proven workhorse zoom, sharp and dependable shoot after shoot. Together they make a second setup I can always count on.'
             },
             {
                 category: 'Stabilizer',
@@ -122,14 +129,21 @@ const pages = [
                 name: 'DJI OM 5',
                 image: 'dji-om-5.png',
                 url: 'https://www.dji.com/om-5',
-                description: 'Light & smart phone stabilizer.'
+                description: 'Light & smart phone stabilizer. Turns handheld phone clips into smooth, steady footage — perfect for behind-the-scenes and quick social videos.'
+            },
+            {
+                category: 'Phone',
+                name: 'Apple iPhone 16 Pro Max',
+                image: 'iphone-16-pro-max.png',
+                url: 'https://www.apple.com/iphone-16-pro/',
+                description: 'Always with me — great for scouting, mood boards and behind-the-scenes. Paired with the OM 5 it shoots surprisingly cinematic video.'
             },
             {
                 category: 'Drone',
                 name: 'DJI Mini 2',
                 image: 'dji-mini-2.png',
                 url: 'https://www.dji.com/mini-2',
-                description: 'Lightweight 4K drone.'
+                description: 'Lightweight 4K drone. Adds a whole new perspective — crisp aerial shots that show places and venues at their very best.'
             },
             {
                 category: 'Pocket camera',
@@ -162,9 +176,37 @@ const pages = [
             {
                 category: 'Editing',
                 name: 'Apple MacBook Pro',
-                image: 'macbook-pro.jpg',
+                image: 'macbook-pro.png',
                 url: 'https://www.apple.com/macbook-pro/',
-                description: 'Laptop for editing and production. Great for reviewing results on the spot and making quick adjustments.'
+                description: 'Fast, reliable and truly mobile, with a display I can trust for colour. Great for reviewing results on the spot and making quick adjustments.'
+            },
+            {
+                category: 'Tablet',
+                name: 'Apple iPad',
+                image: 'ipad.png',
+                url: 'https://www.apple.com/ipad/',
+                description: 'Handy for reviewing shots right on location, even in tight spaces — clients see the results immediately on a beautiful screen.'
+            },
+            {
+                category: 'Editing',
+                name: 'Apple Mac mini',
+                image: 'mac-mini.png',
+                url: 'https://www.apple.com/mac-mini/',
+                description: 'My desktop workhorse: handles big full-size RAW files with ease thanks to fast external drives — smooth editing from import to export.'
+            },
+            {
+                category: 'Display',
+                name: 'Apple Studio Display',
+                image: 'apple-studio-display.png',
+                url: 'https://www.apple.com/studio-display/',
+                description: 'Superb 5K screen with excellent colour accuracy — what I see while retouching is exactly what clients get.'
+            },
+            {
+                category: 'Storage',
+                name: 'Synology DS925+',
+                image: 'synology-ds925.png',
+                url: 'https://www.synology.com/en-global/products/DS925+',
+                description: 'Reliable local storage for the whole photo archive. Files stay safe at home and under my control — nothing leaks to the internet.'
             }
         ]
     }

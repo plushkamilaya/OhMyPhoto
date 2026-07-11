@@ -155,7 +155,19 @@ async function processGearImages() {
         }
 
         try {
-            await sharp(inputPath)
+            // Two passes: trim runs before flatten/linear inside a single
+            // sharp pipeline, so a transparent border has to be trimmed
+            // first. The linear multiply pushes near-white backdrops baked
+            // into vendor renders (#f5f5f7, #fafafa) to pure white, then the
+            // second pass trims the now-white margins.
+            const trimmed = await sharp(inputPath)
+                .trim({ threshold: 10 })
+                .flatten({ background: '#ffffff' })
+                .linear(255 / 245, 0)
+                .toBuffer();
+
+            await sharp(trimmed)
+                .trim({ background: '#ffffff', threshold: 10 })
                 .resize(600, 600, {
                     fit: 'inside',
                     withoutEnlargement: true
