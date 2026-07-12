@@ -68,6 +68,15 @@ const pages = [
         ]
     },
     {
+        name: 'local-commitment',
+        title: 'Local Commitment',
+        template: 'community',
+        hidden: true,
+        images: [
+            'google-maps-local-guide.jpg'
+        ]
+    },
+    {
         name: 'about',
         title: 'About',
         template: 'about',

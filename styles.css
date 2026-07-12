@@ -185,6 +185,47 @@ body {
     color: #fff;
 }
 
+.community-photo {
+    flex: 0 0 380px;
+}
+
+.community-photo img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    width: 100%;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 24px 16px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+}
+
+.stat-number {
+    display: block;
+    font-size: 26px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 6px;
+}
+
+.stat-label {
+    display: block;
+    font-size: 14px;
+    color: #666;
+}
+
 .gear-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -459,7 +500,8 @@ body {
         align-items: center;
     }
 
-    .about-photo {
+    .about-photo,
+    .community-photo {
         flex: none;
         width: 100%;
         max-width: 400px;

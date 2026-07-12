@@ -204,9 +204,8 @@ function generateAboutHTML(page) {
                     <p>I’m a photographer from Täby. I love to notice when everything suddenly comes together in one perfect frame, but I also enjoy imagining stories in advance, thinking about the people, the mood, and how the photos will connect with each other.</p>
                     <p>Before a shoot, I often create mood boards with ideas — not to follow them strictly, but to get into the right mood and let ideas flow. It’s my way of making sure every session has its own special moments, even though those unexpected “magic shots” almost always appear on their own.</p>
                     <p>Whether it’s portraits, events or commercial projects, I always look for authenticity and emotions. For me, a good photograph is one that you can feel, not just see.</p>
-                    <p>📷 You can see more of my work on <a href="https://www.google.com/maps/contrib/110279442478436443087/photos" target="_blank" rel="noopener noreferrer">Google Maps</a>.</p>
+                    <p>📷 My photography also documents the neighbourhood — see our <a href="/#local-commitment" data-page="local-commitment">local commitment</a> on Google Maps.</p>
                     <p>Photography portfolio by Mariia Rytikova. Part of <a href="https://lovkoja.se" target="_blank" rel="noopener noreferrer">Lövkoja</a>.</p>
-                    <a href="https://nara.lovkoja.se/shop/local-motif" target="_blank" rel="noopener noreferrer" class="cta-link">Local photo prints → Local Motif by Lövkoja</a>
                 </div>
             </div>
             <div class="about-content" style="gap: 0; padding-top: 30px;">
@@ -215,6 +214,50 @@ function generateAboutHTML(page) {
             <div class="about-content" style="gap: 0;">
                 <div class="gear-grid">${generateGearHTML(page.gear)}
                 </div>
+            </div>`;
+}
+
+function generateCommunityHTML(page) {
+    const photo = page.images[0];
+    const photoHash = fs.existsSync(path.join(buildDir, `${PHOTOS_PATH}/${photo}`)) ?
+        getFileHash(path.join(buildDir, `${PHOTOS_PATH}/${photo}`)) : '';
+
+    return `
+            <div class="about-content" style="gap: 0; padding-top: 40px;">
+                <h2>Local Commitment</h2>
+            </div>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>Lövkoja Studio provides professional photography and visual content for businesses, organisations and local projects.</p>
+                    <p>Alongside our commissioned work, we independently document a selected number of public spaces, local destinations and neighbourhood places that deserve better visual representation.</p>
+                    <p>The photographs are published on Google Maps, helping people understand, discover and navigate the area while contributing to a more accurate and attractive digital image of the local community.</p>
+                    <p>Locations are selected independently by Lövkoja as part of our ongoing commitment to the places where we live and work.</p>
+                </div>
+                <div class="community-photo">
+                    <img src="${PHOTOS_PATH}/${photo}${photoHash ? `?v=${photoHash}` : ''}" alt="Mariia Rytikova's Local Guide contributions on Google Maps">
+                </div>
+            </div>
+            <div class="about-content" style="gap: 0; padding-top: 30px;">
+                <h2>Local visual impact</h2>
+            </div>
+            <div class="about-content" style="gap: 0;">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-number">500,000+</span>
+                        <span class="stat-label">photo views on Google Maps</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">Local places</span>
+                        <span class="stat-label">documented and shared</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">Täby</span>
+                        <span class="stat-label">and the Stockholm area</span>
+                    </div>
+                </div>
+            </div>
+            <div class="about-content" style="gap: 0; padding-top: 10px; justify-content: center;">
+                <a href="https://www.google.com/maps/contrib/110279442478436443087/photos" target="_blank" rel="noopener noreferrer" class="cta-link">View contributions on Google Maps</a>
             </div>`;
 }
 
@@ -254,6 +297,8 @@ function generateContent(page) {
             return `<div class="gallery-grid">\n                ${generateGalleryHTML(page.images, page)}\n            </div>`;
         case 'about':
             return generateAboutHTML(page);
+        case 'community':
+            return generateCommunityHTML(page);
         default:
             return '';
     }
@@ -511,7 +556,7 @@ async function build() {
     html = html.replace(/PAGE_TITLE/, '');
     
     const navigation = pages
-        .filter(page => page.name !== 'index')
+        .filter(page => page.name !== 'index' && !page.hidden)
         .map(page => `<li><a href="/#${page.name}" data-page="${page.name}">${page.title}</a></li>`)
         .join('\n                    ');
     html = html.replace(/NAVIGATION_PLACEHOLDER/, navigation);
