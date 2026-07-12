@@ -68,15 +68,6 @@ const pages = [
         ]
     },
     {
-        name: 'local-commitment',
-        title: 'Local Commitment',
-        template: 'community',
-        hidden: true,
-        images: [
-            'google-maps-local-guide.jpg'
-        ]
-    },
-    {
         name: 'about',
         title: 'About',
         template: 'about',
@@ -217,6 +208,14 @@ const pages = [
                 url: 'https://www.synology.com/en-global/products/DS925+',
                 description: 'Reliable local storage for the whole photo archive. Files stay safe at home and under my control — nothing leaks to the internet.'
             }
+        ]
+    },
+    {
+        name: 'local-commitment',
+        title: 'Local Commitment',
+        template: 'community',
+        images: [
+            'google-maps-local-guide.jpg'
         ]
     }
 ];

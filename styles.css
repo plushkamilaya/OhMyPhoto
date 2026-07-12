@@ -196,6 +196,7 @@ body {
     border-radius: 8px;
     border: 1px solid #eee;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
 }
 
 .stats-grid {

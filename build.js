@@ -219,8 +219,13 @@ function generateAboutHTML(page) {
 
 function generateCommunityHTML(page) {
     const photo = page.images[0];
-    const photoHash = fs.existsSync(path.join(buildDir, `${PHOTOS_PATH}/${photo}`)) ?
-        getFileHash(path.join(buildDir, `${PHOTOS_PATH}/${photo}`)) : '';
+    const previewSrc = `${PHOTOS_PATH}/preview_${photo}`;
+    const fullSrc = `${PHOTOS_PATH}/${photo}`;
+
+    const previewHash = fs.existsSync(path.join(buildDir, previewSrc)) ?
+        getFileHash(path.join(buildDir, previewSrc)) : '';
+    const fullHash = fs.existsSync(path.join(buildDir, fullSrc)) ?
+        getFileHash(path.join(buildDir, fullSrc)) : '';
 
     return `
             <div class="about-content" style="gap: 0; padding-top: 40px;">
@@ -232,9 +237,10 @@ function generateCommunityHTML(page) {
                     <p>Alongside our commissioned work, we independently document a selected number of public spaces, local destinations and neighbourhood places that deserve better visual representation.</p>
                     <p>The photographs are published on Google Maps, helping people understand, discover and navigate the area while contributing to a more accurate and attractive digital image of the local community.</p>
                     <p>Locations are selected independently by Lövkoja as part of our ongoing commitment to the places where we live and work.</p>
+                    <a href="https://www.google.com/maps/contrib/110279442478436443087/photos" target="_blank" rel="noopener noreferrer" class="cta-link">View contributions on Google Maps</a>
                 </div>
                 <div class="community-photo">
-                    <img src="${PHOTOS_PATH}/${photo}${photoHash ? `?v=${photoHash}` : ''}" alt="Mariia Rytikova's Local Guide contributions on Google Maps">
+                    <img src="${previewSrc}${previewHash ? `?v=${previewHash}` : ''}" data-img-name="${photo}" data-full-src="${fullSrc}${fullHash ? `?v=${fullHash}` : ''}" alt="Mariia Rytikova's Local Guide contributions on Google Maps">
                 </div>
             </div>
             <div class="about-content" style="gap: 0; padding-top: 30px;">
@@ -255,9 +261,6 @@ function generateCommunityHTML(page) {
                         <span class="stat-label">and the Stockholm area</span>
                     </div>
                 </div>
-            </div>
-            <div class="about-content" style="gap: 0; padding-top: 10px; justify-content: center;">
-                <a href="https://www.google.com/maps/contrib/110279442478436443087/photos" target="_blank" rel="noopener noreferrer" class="cta-link">View contributions on Google Maps</a>
             </div>`;
 }
 

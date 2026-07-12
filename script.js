@@ -47,7 +47,7 @@ function updateNavigation() {
 }
 
 function updateImages() {
-    images = Array.from(document.querySelectorAll(".gallery-item img")).map(img => ({
+    images = Array.from(document.querySelectorAll(".gallery-item img, .community-photo img")).map(img => ({
         src: img.src,
         fullSrc: img.dataset.fullSrc,
         name: img.dataset.imgName
@@ -55,7 +55,7 @@ function updateImages() {
 }
 
 function setupEventListeners() {
-    document.querySelectorAll('.gallery-item img').forEach(img => {
+    document.querySelectorAll('.gallery-item img, .community-photo img').forEach(img => {
         img.addEventListener('click', function() {
             openLightbox(this.dataset.imgName);
         });
