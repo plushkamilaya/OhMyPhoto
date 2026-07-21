@@ -23,9 +23,13 @@ const pages = [
         ]
     },
     {
-        name: 'Restaurants',
-        title: 'Restaurants',
-        template: 'gallery',
+        name: 'for-business',
+        title: 'For Business',
+        template: 'gallery-intro',
+        intro: {
+            heading: 'For Business',
+            description: '[Placeholder] Photography, print design, websites and small-scale visual/interior styling for businesses — full introduction coming soon.'
+        },
         images: [
             'ES7A6101.JPG',
             'ES7A6118.JPG',
@@ -42,27 +46,55 @@ const pages = [
         ]
     },
     {
-        name: 'Kids',
-        title: 'Kids',
-        template: 'gallery',
-        images: [
-            'IMG_2433.JPG',
-            'IMG_2724.JPG',
-            'IMG_3408.jpg',
-            'IMG_6213.JPG',
-            'IMG_3937-1.jpg',
-            'IMG_4152_1.jpg',
-            'IMG_4172-1.jpg',
-            'IMG_6146.jpg'
+        name: 'private-sessions',
+        title: 'Private Sessions',
+        template: 'sections',
+        sections: [
+            {
+                id: 'introduction',
+                heading: 'Introduction',
+                placeholder: '[Placeholder] Introduction to private photography sessions for children, families and animals — coming soon.'
+            },
+            {
+                id: 'availability',
+                heading: 'Current Availability',
+                placeholder: '[Placeholder] Current booking availability will be listed here.'
+            },
+            {
+                id: 'mini-sessions',
+                heading: 'Mini Sessions',
+                placeholder: '[Placeholder] Short, focused sessions — details coming soon.'
+            },
+            {
+                id: 'story-sessions',
+                heading: 'Story Sessions',
+                placeholder: '[Placeholder] Narrative-style sessions capturing a day or milestone — details coming soon.'
+            },
+            {
+                id: 'current-projects',
+                heading: 'Current Projects',
+                placeholder: '[Placeholder] A look at current and recent private-client work.',
+                images: [
+                    'IMG_2433.JPG',
+                    'IMG_2724.JPG',
+                    'IMG_3408.jpg',
+                    'IMG_6213.JPG',
+                    'IMG_3937-1.jpg',
+                    'IMG_4152_1.jpg',
+                    'IMG_4172-1.jpg',
+                    'IMG_6146.jpg'
+                ]
+            }
         ]
     },
     {
-        name: 'places',
-        title: 'Places',
-        template: 'gallery',
+        name: 'local-commitment',
+        title: 'Local Commitment',
+        template: 'community',
         images: [
-            'ES7A3178.JPG',
-            'ES7A3332-1.jpg',
+            'google-maps-local-guide.jpg'
+        ],
+        galleryImages: [
             'ES7A2999.jpg',
             'ES7A3168-1.jpg'
         ]
@@ -211,11 +243,15 @@ const pages = [
         ]
     },
     {
-        name: 'local-commitment',
-        title: 'Local Commitment',
-        template: 'community',
+        name: 'places',
+        title: 'Places',
+        hidden: true,
+        template: 'gallery',
         images: [
-            'google-maps-local-guide.jpg'
+            'ES7A3178.JPG',
+            'ES7A3332-1.jpg',
+            'ES7A2999.jpg',
+            'ES7A3168-1.jpg'
         ]
     }
 ];

@@ -2,6 +2,12 @@ let currentImageIndex = 0;
 let images = [];
 let currentPage = 'index';
 
+const REDIRECTS = { Restaurants: 'for-business', Kids: 'private-sessions' };
+
+function resolveHash(hash) {
+    return REDIRECTS[hash] || hash;
+}
+
 const allSiteImages = ALL_SITE_IMAGES;
 
 const PAGES_DATA = PAGES_DATA_PLACEHOLDER;
@@ -274,15 +280,15 @@ window.addEventListener("load", function() {
     });
     
     window.addEventListener('hashchange', function() {
-        const hash = window.location.hash.slice(1);
+        const hash = resolveHash(window.location.hash.slice(1));
         if (pages[hash]) {
             navigateToPage(hash);
         }
     });
-    
 
-    
-    let hash = window.location.hash.slice(1);
+
+
+    let hash = resolveHash(window.location.hash.slice(1));
     if (!hash) {
         const path = window.location.pathname;
         if (path === '/' || path === '/index.html') {
@@ -305,7 +311,7 @@ window.addEventListener("load", function() {
 });
 
 window.addEventListener("popstate", function(event) {
-    let hash = window.location.hash.slice(1);
+    let hash = resolveHash(window.location.hash.slice(1));
     if (!hash) {
         const path = window.location.pathname;
         if (path === '/' || path === '/index.html') {

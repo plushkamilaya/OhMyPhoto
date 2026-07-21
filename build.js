@@ -12,6 +12,15 @@ function imgSrc(image) {
     return typeof image === 'string' ? image : image.src;
 }
 
+function collectPageImageSrcs(page) {
+    const images = [
+        ...(page.images || []),
+        ...(page.galleryImages || []),
+        ...(page.sections || []).flatMap(section => section.images || [])
+    ];
+    return images.map(imgSrc);
+}
+
 const buildDir = './build';
 const buildPhotosDir = './build/photos';
 
@@ -44,11 +53,7 @@ async function processImages() {
     const allImages = new Set();
     
     pages.forEach(page => {
-        if (page.images && page.images.length > 0) {
-            page.images.forEach(img => {
-                allImages.add(imgSrc(img));
-            });
-        }
+        collectPageImageSrcs(page).forEach(src => allImages.add(src));
     });
 
     let hasErrors = false;
@@ -261,7 +266,47 @@ function generateCommunityHTML(page) {
                         <span class="stat-label">and the Stockholm area</span>
                     </div>
                 </div>
+            </div>${page.galleryImages && page.galleryImages.length > 0 ? `
+            <div class="about-content" style="gap: 0; padding-top: 30px;">
+                <h2>From the neighbourhood</h2>
+            </div>
+            <div class="gallery-grid">
+                ${generateGalleryHTML(page.galleryImages, page)}
+            </div>` : ''}`;
+}
+
+function generateGalleryIntroHTML(page) {
+    const intro = page.intro || {};
+
+    return `
+            <div class="about-content" style="gap: 0; padding-top: 40px;">
+                <h2>${intro.heading || page.title}</h2>
+            </div>
+            <div class="about-content" style="gap: 0;">
+                <div class="placeholder-box">
+                    <p>${intro.description || ''}</p>
+                </div>
+            </div>
+            <div class="gallery-grid">
+                ${generateGalleryHTML(page.images, page)}
             </div>`;
+}
+
+function generateSectionsHTML(page) {
+    const sections = page.sections || [];
+
+    return sections.map((section, index) => `
+            <div class="about-content" style="gap: 0; padding-top: ${index === 0 ? 40 : 30}px;">
+                <h2>${section.heading}</h2>
+            </div>
+            <div class="about-content" style="gap: 0;">
+                <div class="placeholder-box">
+                    <p>${section.placeholder}</p>
+                </div>
+            </div>${section.images && section.images.length > 0 ? `
+            <div class="gallery-grid">
+                ${generateGalleryHTML(section.images, page)}
+            </div>` : ''}`).join('');
 }
 
 function generateGearHTML(gear) {
@@ -298,6 +343,10 @@ function generateContent(page) {
     switch (page.template) {
         case 'gallery':
             return `<div class="gallery-grid">\n                ${generateGalleryHTML(page.images, page)}\n            </div>`;
+        case 'gallery-intro':
+            return generateGalleryIntroHTML(page);
+        case 'sections':
+            return generateSectionsHTML(page);
         case 'about':
             return generateAboutHTML(page);
         case 'community':
@@ -356,8 +405,7 @@ function generateAllSiteImagesJson() {
     const allImages = new Map();
 
     pages.forEach(page => {
-        page.images.forEach(image => {
-            const src = imgSrc(image);
+        collectPageImageSrcs(page).forEach(src => {
             if (!allImages.has(src)) {
                 const originalExtension = path.extname(src);
                 const previewPath = `${PHOTOS_PATH}/preview_${path.basename(src, originalExtension)}${originalExtension}`;
@@ -431,12 +479,9 @@ function checkUnusedPhotos() {
     
     const usedPhotos = new Set();
     pages.forEach(page => {
-        if (page.images && page.images.length > 0) {
-            page.images.forEach(img => {
-                const filename = path.basename(imgSrc(img));
-                usedPhotos.add(filename);
-            });
-        }
+        collectPageImageSrcs(page).forEach(src => {
+            usedPhotos.add(path.basename(src));
+        });
     });
     
     const missingPhotos = [];
