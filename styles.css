@@ -254,12 +254,24 @@ body {
     flex: 0 0 380px;
 }
 
-.neighbourhood-gallery {
-    flex: 0 0 380px;
-    grid-template-columns: repeat(2, 1fr);
+.photo-strip-wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 10px 20px 0;
 }
 
-.neighbourhood-gallery .gallery-item img {
+.photo-strip {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+}
+
+.photo-strip .gallery-item {
+    flex: 0 0 180px;
+}
+
+.photo-strip .gallery-item img {
     height: 180px;
 }
 
@@ -576,8 +588,7 @@ body {
     }
 
     .about-photo,
-    .community-photo,
-    .neighbourhood-gallery {
+    .community-photo {
         flex: none;
         width: 100%;
         max-width: 400px;
