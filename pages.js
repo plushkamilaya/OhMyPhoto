@@ -49,6 +49,10 @@ const pages = [
         name: 'private-sessions',
         title: 'Private Sessions',
         template: 'sessions-split',
+        intro: {
+            heading: 'Private Sessions',
+            description: '[Placeholder] Limited private photography sessions for children, families and animals — full introduction coming soon.'
+        },
         images: [
             'IMG_2433.JPG',
             'IMG_2724.JPG',

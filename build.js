@@ -293,6 +293,7 @@ function generateGalleryIntroHTML(page) {
 }
 
 function generateSessionsSplitHTML(page) {
+    const intro = page.intro || {};
     const options = page.sessionOptions || [];
 
     const buttons = options.map(option => `
@@ -302,6 +303,14 @@ function generateSessionsSplitHTML(page) {
                     </button>`).join('');
 
     return `
+            <div class="about-content" style="gap: 0; padding-top: 40px;">
+                <h2>${intro.heading || page.title}</h2>
+            </div>
+            <div class="about-content" style="gap: 0;">
+                <div class="placeholder-box">
+                    <p>${intro.description || ''}</p>
+                </div>
+            </div>
             <div class="session-split">
                 <div class="session-gallery gallery-grid">
                     ${generateGalleryHTML(page.images, page)}
