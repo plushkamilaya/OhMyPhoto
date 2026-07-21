@@ -270,8 +270,13 @@ function generateCommunityHTML(page) {
             <div class="about-content" style="gap: 0; padding-top: 30px;">
                 <h2>From the neighbourhood</h2>
             </div>
-            <div class="gallery-grid">
-                ${generateGalleryHTML(page.galleryImages, page)}
+            <div class="about-content">
+                <div class="gallery-grid neighbourhood-gallery">
+                    ${generateGalleryHTML(page.galleryImages, page)}
+                </div>
+                <div class="about-text">
+                    <p>[Placeholder] A couple more frames from the same local places we document — full caption coming soon.</p>
+                </div>
             </div>` : ''}`;
 }
 

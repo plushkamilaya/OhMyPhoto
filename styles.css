@@ -259,6 +259,15 @@ body {
     flex: 0 0 380px;
 }
 
+.neighbourhood-gallery {
+    flex: 0 0 380px;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.neighbourhood-gallery .gallery-item img {
+    height: 180px;
+}
+
 .community-photo img {
     width: 100%;
     height: auto;
@@ -572,7 +581,8 @@ body {
     }
 
     .about-photo,
-    .community-photo {
+    .community-photo,
+    .neighbourhood-gallery {
         flex: none;
         width: 100%;
         max-width: 400px;
