@@ -270,10 +270,8 @@ function generateCommunityHTML(page) {
             <div class="about-content" style="gap: 0; padding-top: 30px;">
                 <h2>From the neighbourhood</h2>
             </div>
-            <div class="photo-strip-wrap">
-                <div class="photo-strip">
-                    ${generateGalleryHTML(page.galleryImages, page)}
-                </div>
+            <div class="gallery-grid">
+                ${generateGalleryHTML(page.galleryImages, page)}
             </div>` : ''}`;
 }
 
