@@ -20,6 +20,20 @@ PAGES_DATA.forEach(page => {
     };
 });
 
+const EQUIPMENT_CATALOG = EQUIPMENT_CATALOG_PLACEHOLDER;
+
+const EQUIPMENT_BY_ID = {};
+EQUIPMENT_CATALOG.forEach(item => {
+    EQUIPMENT_BY_ID[item.id] = item;
+});
+
+const ENQUIRY_LABELS = {
+    'book-similar-session': 'Book a similar session',
+    'request-similar-shoot': 'Request a similar shoot',
+    'ask-print': 'Ask about a print',
+    'license-image': 'License this image'
+};
+
 function navigateToPage(pageName) {
     if (!pages[pageName]) return;
     
@@ -56,7 +70,12 @@ function updateImages() {
     images = Array.from(document.querySelectorAll(".gallery-item img, .community-photo img")).map(img => ({
         src: img.src,
         fullSrc: img.dataset.fullSrc,
-        name: img.dataset.imgName
+        name: img.dataset.imgName,
+        cameraId: img.dataset.camera || null,
+        lensId: img.dataset.lens || null,
+        title: img.dataset.title || null,
+        caption: img.dataset.caption || null,
+        enquiryAction: img.dataset.enquiry || null
     }));
 }
 
@@ -138,6 +157,57 @@ function setupLightboxDoubleTap() {
 
 
 
+function renderGearRow(rowEl, equipmentId) {
+    if (!equipmentId || !EQUIPMENT_BY_ID[equipmentId]) {
+        rowEl.hidden = true;
+        rowEl.innerHTML = '';
+        return;
+    }
+
+    const item = EQUIPMENT_BY_ID[equipmentId];
+    rowEl.hidden = false;
+    rowEl.innerHTML = `
+        <img src="${item.image}" alt="${item.name}" loading="lazy">
+        <span>
+            <span class="lightbox-gear-name">${item.name}</span>
+            <span class="lightbox-gear-desc">${item.description}</span>
+        </span>`;
+}
+
+function renderLightboxPanel(image) {
+    const titleEl = document.getElementById('lightbox-title');
+    const captionEl = document.getElementById('lightbox-caption');
+    const gearEl = document.getElementById('lightbox-gear');
+    const cameraRow = document.getElementById('lightbox-gear-camera');
+    const lensRow = document.getElementById('lightbox-gear-lens');
+    const enquiryBtn = document.getElementById('lightbox-enquiry-btn');
+    const enquiryForm = document.getElementById('lightbox-enquiry-form');
+
+    titleEl.hidden = !image.title;
+    titleEl.textContent = image.title || '';
+
+    captionEl.hidden = !image.caption;
+    captionEl.textContent = image.caption || '';
+
+    gearEl.hidden = !image.cameraId;
+    if (image.cameraId) {
+        renderGearRow(cameraRow, image.cameraId);
+        renderGearRow(lensRow, image.lensId);
+    }
+
+    enquiryForm.hidden = true;
+    enquiryForm.reset();
+
+    if (image.enquiryAction && ENQUIRY_LABELS[image.enquiryAction]) {
+        enquiryBtn.hidden = false;
+        enquiryBtn.textContent = ENQUIRY_LABELS[image.enquiryAction];
+        enquiryBtn.dataset.action = image.enquiryAction;
+    } else {
+        enquiryBtn.hidden = true;
+        delete enquiryBtn.dataset.action;
+    }
+}
+
 function openLightbox(imgName) {
     try {
         currentImageIndex = images.findIndex(img => img.name === imgName);
@@ -148,6 +218,7 @@ function openLightbox(imgName) {
         
         if (lightboxImg && lightbox) {
             lightboxImg.src = images[currentImageIndex].fullSrc;
+            renderLightboxPanel(images[currentImageIndex]);
             lightbox.style.display = "block";
             document.body.style.overflow = "hidden";
             
@@ -178,7 +249,8 @@ function previousImage(event) {
     }
     currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
     document.getElementById("lightbox-img").src = images[currentImageIndex].fullSrc;
-    
+    renderLightboxPanel(images[currentImageIndex]);
+
     const url = new URL(window.location);
     url.searchParams.set("image", images[currentImageIndex].name);
     window.history.pushState({}, "", url);
@@ -190,7 +262,8 @@ function nextImage(event) {
     }
     currentImageIndex = (currentImageIndex + 1) % images.length;
     document.getElementById("lightbox-img").src = images[currentImageIndex].fullSrc;
-    
+    renderLightboxPanel(images[currentImageIndex]);
+
     const url = new URL(window.location);
     url.searchParams.set("image", images[currentImageIndex].name);
     window.history.pushState({}, "", url);
@@ -246,6 +319,51 @@ document.getElementById("lightbox").addEventListener("click", function(event) {
         event.stopPropagation();
         closeLightbox();
     }
+});
+
+document.getElementById("lightbox-enquiry-btn").addEventListener("click", function(event) {
+    event.stopPropagation();
+    const form = document.getElementById("lightbox-enquiry-form");
+    form.hidden = !form.hidden;
+});
+
+document.getElementById("lightbox-enquiry-form").addEventListener("click", function(event) {
+    event.stopPropagation();
+});
+
+document.getElementById("lightbox-enquiry-form").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const form = event.target;
+    const image = images[currentImageIndex] || {};
+    const action = document.getElementById("lightbox-enquiry-btn").dataset.action || '';
+    const camera = EQUIPMENT_BY_ID[image.cameraId] ? EQUIPMENT_BY_ID[image.cameraId].name : '';
+    const lens = EQUIPMENT_BY_ID[image.lensId] ? EQUIPMENT_BY_ID[image.lensId].name : '';
+
+    form.photoId.value = image.name || '';
+    form.page.value = currentPage;
+    form.enquiryAction.value = action;
+    form.camera.value = camera;
+    form.lens.value = lens;
+
+    const subject = `Enquiry: ${ENQUIRY_LABELS[action] || 'Photo enquiry'} (${image.name || ''})`;
+    const bodyLines = [
+        `Name: ${form.name.value}`,
+        `Email: ${form.email.value}`,
+        `Phone: ${form.phone.value}`,
+        '',
+        form.message.value,
+        '',
+        '---',
+        `Photo: ${image.name || ''}`,
+        `Page: ${currentPage}`,
+        `Action: ${action}`,
+        `Camera: ${camera}`,
+        `Lens: ${lens || 'n/a'}`
+    ];
+
+    const mailtoUrl = `mailto:hello@plushka.se?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines.join('\n'))}`;
+    window.location.href = mailtoUrl;
 });
 
 document.addEventListener("keydown", function(event) {

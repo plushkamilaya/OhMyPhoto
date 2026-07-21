@@ -1,15 +1,31 @@
 const fs = require('fs');
 const path = require('path');
 const sharp = require('sharp');
+const exifr = require('exifr');
 const { execSync } = require('child_process');
 const crypto = require('crypto');
 
 const PHOTOS_PATH = '/photos';
 
 const pages = require('./pages');
+const equipment = require('./equipment');
+
+// Default enquiry action per page (keyed by page.name), applied to every
+// photo on that page unless overridden on the individual image entry.
+// Pages not listed here (index, about, hidden places) show no enquiry button.
+const DEFAULT_ENQUIRY_ACTION = {
+    'private-sessions': 'book-similar-session',
+    'for-business': 'request-similar-shoot'
+};
+
+const DEFAULT_CAMERA_ID = 'canon-eos-r6';
 
 function imgSrc(image) {
     return typeof image === 'string' ? image : image.src;
+}
+
+function escapeAttr(value) {
+    return String(value).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
 }
 
 function collectPageImageSrcs(page) {
@@ -30,6 +46,48 @@ if (!fs.existsSync(buildDir)) {
 
 if (!fs.existsSync(buildPhotosDir)) {
     fs.mkdirSync(buildPhotosDir);
+}
+
+// filename -> { cameraId, lensId } resolved once per unique photo during
+// processImages(), read synchronously afterwards by generateGalleryHTML().
+const equipmentCache = new Map();
+
+function findEquipmentIdByAlias(type, value) {
+    if (!value) {
+        return null;
+    }
+    const match = equipment.find(item => item.type === type && item.aliases.includes(value));
+    return match ? match.id : null;
+}
+
+// Reads only Make/Model/LensModel from the original file — never GPS,
+// serial numbers, owner info, or capture timestamps. Camera always
+// resolves to something (defaulting to DEFAULT_CAMERA_ID); a lens that
+// isn't recognised in the equipment catalogue is omitted, never guessed.
+async function resolveEquipmentForFilenames(filenames) {
+    for (const filename of filenames) {
+        if (equipmentCache.has(filename)) {
+            continue;
+        }
+
+        let cameraId = DEFAULT_CAMERA_ID;
+        let lensId = null;
+        const inputPath = '.' + PHOTOS_PATH + '/' + filename;
+
+        try {
+            if (fs.existsSync(inputPath)) {
+                const exif = await exifr.parse(inputPath, ['Make', 'Model', 'LensModel']);
+                if (exif) {
+                    cameraId = findEquipmentIdByAlias('camera', exif.Model) || DEFAULT_CAMERA_ID;
+                    lensId = findEquipmentIdByAlias('lens', exif.LensModel);
+                }
+            }
+        } catch (error) {
+            // No readable EXIF - fall back to the default camera, no lens.
+        }
+
+        equipmentCache.set(filename, { cameraId, lensId });
+    }
 }
 
 async function optimizeImage(inputPath, outputPath, maxSize = 1000) {
@@ -55,6 +113,8 @@ async function processImages() {
     pages.forEach(page => {
         collectPageImageSrcs(page).forEach(src => allImages.add(src));
     });
+
+    await resolveEquipmentForFilenames(allImages);
 
     let hasErrors = false;
     const errors = [];
@@ -104,6 +164,8 @@ function generateGalleryHTML(images, page) {
         return '';
     }
 
+    const defaultEnquiryAction = DEFAULT_ENQUIRY_ACTION[page.name] || null;
+
     return images.map(image => {
         const src = imgSrc(image);
         const filename = path.basename(src);
@@ -118,9 +180,26 @@ function generateGalleryHTML(images, page) {
         const wideSpan = typeof image.wide === 'number' ? image.wide : (image.wide ? 2 : 0);
         const wideClass = wideSpan > 1 ? ` gallery-item--wide-${wideSpan}` : '';
 
+        const override = (typeof image === 'object' && image.equipmentOverride) || {};
+        const cached = equipmentCache.get(filename) || { cameraId: DEFAULT_CAMERA_ID, lensId: null };
+        const cameraId = override.camera || cached.cameraId;
+        const lensId = override.lens || cached.lensId;
+
+        const title = typeof image === 'object' ? image.title : undefined;
+        const caption = typeof image === 'object' ? image.caption : undefined;
+        const enquiryAction = (typeof image === 'object' && image.enquiryAction) || defaultEnquiryAction;
+
+        const extraAttrs = [
+            ` data-camera="${cameraId}"`,
+            lensId ? ` data-lens="${lensId}"` : '',
+            title ? ` data-title="${escapeAttr(title)}"` : '',
+            caption ? ` data-caption="${escapeAttr(caption)}"` : '',
+            enquiryAction ? ` data-enquiry="${enquiryAction}"` : ''
+        ].join('');
+
         return `
                 <div class="gallery-item${wideClass}">
-                    <img src="${previewSrc}${previewHash ? `?v=${previewHash}` : ''}" data-img-name="${src}" data-full-src="${fullSrc}${fullHash ? `?v=${fullHash}` : ''}" alt="${page.title ? page.title + ' photography' : 'Photography'}">
+                    <img src="${previewSrc}${previewHash ? `?v=${previewHash}` : ''}" data-img-name="${src}" data-full-src="${fullSrc}${fullHash ? `?v=${fullHash}` : ''}"${extraAttrs} alt="${page.title ? page.title + ' photography' : 'Photography'}">
                 </div>`;
     }).join('');
 }
@@ -141,6 +220,12 @@ async function processGearImages() {
                     allGearImages.add(item.image);
                 }
             });
+        }
+    });
+
+    equipment.forEach(item => {
+        if (item.image) {
+            allGearImages.add(item.image);
         }
     });
 
@@ -441,6 +526,24 @@ function generateAllSiteImagesJson() {
     return JSON.stringify(imagesArray, null, 8);
 }
 
+function generateEquipmentCatalogJson() {
+    const catalog = equipment.map(item => {
+        const outputName = gearOutputName(item.image);
+        const outputPath = path.join(buildPhotosDir, outputName);
+        const hash = fs.existsSync(outputPath) ? getFileHash(outputPath) : '';
+
+        return {
+            id: item.id,
+            type: item.type,
+            name: item.name,
+            description: item.description,
+            image: `${PHOTOS_PATH}/${outputName}${hash ? `?v=${hash}` : ''}`
+        };
+    });
+
+    return JSON.stringify(catalog, null, 8);
+}
+
 function minifyCSS(inputPath, outputPath) {
     try {
         execSync(`npx clean-css-cli -o ${outputPath} ${inputPath}`, { stdio: 'inherit' });
@@ -592,7 +695,8 @@ async function build() {
     
     let script = fs.readFileSync('./script.js', 'utf8');
     script = script.replace(/ALL_SITE_IMAGES/, allSiteImagesJson);
-    
+    script = script.replace(/EQUIPMENT_CATALOG_PLACEHOLDER/, generateEquipmentCatalogJson());
+
     const pagesWithContent = pages.map(page => ({
         name: page.name,
         title: page.title,

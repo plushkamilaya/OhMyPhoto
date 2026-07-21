@@ -86,12 +86,36 @@
     </footer>
 
     <div id="lightbox" class="lightbox">
-        <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
-        <div class="lightbox-content">
-            <img id="lightbox-img" src="" alt="Lightbox Image">
+        <div class="lightbox-body">
+            <div class="lightbox-content">
+                <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+                <img id="lightbox-img" src="" alt="Lightbox Image">
+                <div class="lightbox-nav lightbox-prev" onclick="previousImage(event)">&#10094;</div>
+                <div class="lightbox-nav lightbox-next" onclick="nextImage(event)">&#10095;</div>
+            </div>
+            <div class="lightbox-panel" id="lightbox-panel">
+                <h3 id="lightbox-title" class="lightbox-title" hidden></h3>
+                <p id="lightbox-caption" class="lightbox-caption" hidden></p>
+                <div class="lightbox-gear" id="lightbox-gear" hidden>
+                    <span class="lightbox-gear-label">Shot with</span>
+                    <div id="lightbox-gear-camera" class="lightbox-gear-row"></div>
+                    <div id="lightbox-gear-lens" class="lightbox-gear-row" hidden></div>
+                </div>
+                <button type="button" id="lightbox-enquiry-btn" class="session-btn lightbox-enquiry-btn" hidden></button>
+                <form id="lightbox-enquiry-form" class="lightbox-enquiry-form" hidden>
+                    <input type="text" name="name" class="enquiry-field" placeholder="Name" required>
+                    <input type="email" name="email" class="enquiry-field" placeholder="Email" required>
+                    <input type="tel" name="phone" class="enquiry-field" placeholder="Phone (optional)">
+                    <textarea name="message" class="enquiry-field" placeholder="Message" rows="3"></textarea>
+                    <input type="hidden" name="photoId">
+                    <input type="hidden" name="page">
+                    <input type="hidden" name="enquiryAction">
+                    <input type="hidden" name="camera">
+                    <input type="hidden" name="lens">
+                    <button type="submit" class="session-btn">Send enquiry</button>
+                </form>
+            </div>
         </div>
-        <div class="lightbox-nav lightbox-prev" onclick="previousImage(event)">&#10094;</div>
-        <div class="lightbox-nav lightbox-next" onclick="nextImage(event)">&#10095;</div>
     </div>
 
     <script src="/script.js?v=JS_HASH"></script>
