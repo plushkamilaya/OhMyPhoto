@@ -222,21 +222,6 @@ function generateAboutHTML(page) {
             </div>`;
 }
 
-function generateCommunityPhotoHTML(filename, alt) {
-    const previewSrc = `${PHOTOS_PATH}/preview_${filename}`;
-    const fullSrc = `${PHOTOS_PATH}/${filename}`;
-
-    const previewHash = fs.existsSync(path.join(buildDir, previewSrc)) ?
-        getFileHash(path.join(buildDir, previewSrc)) : '';
-    const fullHash = fs.existsSync(path.join(buildDir, fullSrc)) ?
-        getFileHash(path.join(buildDir, fullSrc)) : '';
-
-    return `
-                <div class="community-photo">
-                    <img src="${previewSrc}${previewHash ? `?v=${previewHash}` : ''}" data-img-name="${filename}" data-full-src="${fullSrc}${fullHash ? `?v=${fullHash}` : ''}" alt="${alt}">
-                </div>`;
-}
-
 function generateCommunityHTML(page) {
     const photo = page.images[0];
     const previewSrc = `${PHOTOS_PATH}/preview_${photo}`;
@@ -285,7 +270,8 @@ function generateCommunityHTML(page) {
             <div class="about-content" style="gap: 0; padding-top: 30px;">
                 <h2>From the neighbourhood</h2>
             </div>
-            <div class="about-content" style="flex-wrap: wrap;">${page.galleryImages.map(image => generateCommunityPhotoHTML(imgSrc(image), page.title ? page.title + ' photography' : 'Photography')).join('')}
+            <div class="gallery-grid">
+                ${generateGalleryHTML(page.galleryImages, page)}
             </div>` : ''}`;
 }
 
