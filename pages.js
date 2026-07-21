@@ -48,42 +48,27 @@ const pages = [
     {
         name: 'private-sessions',
         title: 'Private Sessions',
-        template: 'sections',
-        sections: [
-            {
-                id: 'introduction',
-                heading: 'Introduction',
-                placeholder: '[Placeholder] Introduction to private photography sessions for children, families and animals — coming soon.'
-            },
-            {
-                id: 'availability',
-                heading: 'Current Availability',
-                placeholder: '[Placeholder] Current booking availability will be listed here.'
-            },
+        template: 'sessions-split',
+        images: [
+            'IMG_2433.JPG',
+            'IMG_2724.JPG',
+            'IMG_3408.jpg',
+            'IMG_6213.JPG',
+            'IMG_3937-1.jpg',
+            'IMG_4152_1.jpg',
+            'IMG_4172-1.jpg',
+            'IMG_6146.jpg'
+        ],
+        sessionOptions: [
             {
                 id: 'mini-sessions',
                 heading: 'Mini Sessions',
-                placeholder: '[Placeholder] Short, focused sessions — details coming soon.'
+                description: '[Placeholder] Short, focused sessions — details coming soon.'
             },
             {
                 id: 'story-sessions',
                 heading: 'Story Sessions',
-                placeholder: '[Placeholder] Narrative-style sessions capturing a day or milestone — details coming soon.'
-            },
-            {
-                id: 'current-projects',
-                heading: 'Current Projects',
-                placeholder: '[Placeholder] A look at current and recent private-client work.',
-                images: [
-                    'IMG_2433.JPG',
-                    'IMG_2724.JPG',
-                    'IMG_3408.jpg',
-                    'IMG_6213.JPG',
-                    'IMG_3937-1.jpg',
-                    'IMG_4152_1.jpg',
-                    'IMG_4172-1.jpg',
-                    'IMG_6146.jpg'
-                ]
+                description: '[Placeholder] Narrative-style sessions capturing a day or milestone — details coming soon.'
             }
         ]
     },

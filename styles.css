@@ -199,6 +199,62 @@ body {
     color: #666;
 }
 
+.session-split {
+    display: flex;
+    align-items: flex-start;
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 20px 0;
+}
+
+.session-gallery {
+    flex: 0 0 50%;
+    grid-template-columns: repeat(2, 1fr);
+    position: sticky;
+    top: 100px;
+}
+
+.session-actions {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 10px 0;
+}
+
+.session-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 20px 22px;
+    background-color: #f8f9fa;
+    border: 1px solid #333;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.session-btn:hover {
+    background-color: #333;
+    color: #fff;
+}
+
+.session-btn-title {
+    display: block;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.session-btn-desc {
+    display: block;
+    font-size: 14px;
+    line-height: 1.6;
+    opacity: 0.8;
+}
+
 .community-photo {
     flex: 0 0 380px;
 }
@@ -525,6 +581,27 @@ body {
 
     .about-text h2 {
         font-size: 28px;
+    }
+
+    .session-split {
+        gap: 20px;
+        padding: 15px 15px 0;
+    }
+
+    .session-gallery {
+        grid-template-columns: 1fr;
+    }
+
+    .session-btn {
+        padding: 14px 16px;
+    }
+
+    .session-btn-title {
+        font-size: 16px;
+    }
+
+    .session-btn-desc {
+        font-size: 13px;
     }
 }
 

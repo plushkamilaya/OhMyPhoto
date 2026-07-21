@@ -292,21 +292,23 @@ function generateGalleryIntroHTML(page) {
             </div>`;
 }
 
-function generateSectionsHTML(page) {
-    const sections = page.sections || [];
+function generateSessionsSplitHTML(page) {
+    const options = page.sessionOptions || [];
 
-    return sections.map((section, index) => `
-            <div class="about-content" style="gap: 0; padding-top: ${index === 0 ? 40 : 30}px;">
-                <h2>${section.heading}</h2>
-            </div>
-            <div class="about-content" style="gap: 0;">
-                <div class="placeholder-box">
-                    <p>${section.placeholder}</p>
+    const buttons = options.map(option => `
+                    <button type="button" class="session-btn">
+                        <span class="session-btn-title">${option.heading}</span>
+                        <span class="session-btn-desc">${option.description}</span>
+                    </button>`).join('');
+
+    return `
+            <div class="session-split">
+                <div class="session-gallery gallery-grid">
+                    ${generateGalleryHTML(page.images, page)}
                 </div>
-            </div>${section.images && section.images.length > 0 ? `
-            <div class="gallery-grid">
-                ${generateGalleryHTML(section.images, page)}
-            </div>` : ''}`).join('');
+                <div class="session-actions">${buttons}
+                </div>
+            </div>`;
 }
 
 function generateGearHTML(gear) {
@@ -345,8 +347,8 @@ function generateContent(page) {
             return `<div class="gallery-grid">\n                ${generateGalleryHTML(page.images, page)}\n            </div>`;
         case 'gallery-intro':
             return generateGalleryIntroHTML(page);
-        case 'sections':
-            return generateSectionsHTML(page);
+        case 'sessions-split':
+            return generateSessionsSplitHTML(page);
         case 'about':
             return generateAboutHTML(page);
         case 'community':
