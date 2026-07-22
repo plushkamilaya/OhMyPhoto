@@ -40,7 +40,6 @@ function navigateToPage(pageName) {
     currentPage = pageName;
     const page = pages[pageName];
     
-    document.querySelector('.header-page-title').textContent = page.title || '';
     document.getElementById('page-content').innerHTML = page.content;
     
     updateNavigation();
