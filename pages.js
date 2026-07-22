@@ -28,7 +28,7 @@ const pages = [
         template: 'gallery-intro',
         intro: {
             heading: 'For Business',
-            description: '[Placeholder] Photography, print design, websites and small-scale visual/interior styling for businesses — full introduction coming soon.'
+            description: 'I help businesses look their best — photography, print design, websites, and small-scale visual and interior styling, all tailored to fit your brand and space.'
         },
         images: [
             'ES7A6101.JPG',
@@ -51,7 +51,7 @@ const pages = [
         template: 'sessions-split',
         intro: {
             heading: 'Private Sessions',
-            description: '[Placeholder] Limited private photography sessions for children, families and animals — full introduction coming soon.'
+            description: 'I offer a limited number of private photography sessions each season — for children, families and pets — capturing genuine moments in a relaxed, unhurried setting.'
         },
         images: [
             'IMG_2433.JPG',
@@ -67,12 +67,12 @@ const pages = [
             {
                 id: 'mini-sessions',
                 heading: 'Mini Sessions',
-                description: '[Placeholder] Short, focused sessions — details coming soon.'
+                description: 'Quick, focused sessions built around one clear idea — perfect for a fresh portrait, a seasonal update, or a small milestone.'
             },
             {
                 id: 'story-sessions',
                 heading: 'Story Sessions',
-                description: '[Placeholder] Narrative-style sessions capturing a day or milestone — details coming soon.'
+                description: 'Longer, narrative-style sessions that follow a day, an event, or a milestone from start to finish — the full story, not just a single frame.'
             }
         ]
     },
