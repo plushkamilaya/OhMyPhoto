@@ -49,9 +49,8 @@ const equipment = [
         type: 'lens',
         aliases: ['EF50mm f/1.4 USM'],
         name: 'Canon EF 50mm F1.4 USM',
-        image: 'canon-ef-50-1.4-placeholder.jpg',
-        description: 'Fast, lightweight prime for people and available-light work.',
-        placeholder: true
+        image: 'canon-ef-50-1.4.jpg',
+        description: 'Fast, lightweight prime for people and available-light work.'
     },
     {
         id: 'canon-ef-24-70',

@@ -118,11 +118,18 @@ const pages = [
                 description: 'Best for events, sports, portraits — and capturing kids without getting in their way. My biggest lens, but also the most discreet: sharp from a distance, fast in action.'
             },
             {
-                category: 'Lenses',
-                name: 'Canon RF 85mm F2 Macro IS STM & EF 50mm f/1.8 STM',
+                category: 'Lens',
+                name: 'Canon RF 85mm F2 Macro IS STM',
                 image: 'canon-rf-85.jpg',
                 url: 'https://www.canon-europe.com/lenses/rf-85mm-f2-macro-is-stm/',
-                description: 'My go-to lenses for people, food, and details. Lightweight, fast, and easy to carry all day — yet they deliver glossy, cinematic results.'
+                description: 'My go-to lens for people, food, and details. Lightweight, fast, and easy to carry all day — yet it delivers glossy, cinematic results.'
+            },
+            {
+                category: 'Lens',
+                name: 'Canon EF 50mm f/1.4 USM',
+                image: 'canon-ef-50-1.4.jpg',
+                url: 'https://www.canon-europe.com/lenses/ef-50mm-f-1-4-usm-lens/',
+                description: 'A compact, fast standard lens — sharp wide open at f/1.4 and always ready for portraits, reportage, and everyday moments.'
             },
             {
                 category: 'Second camera',

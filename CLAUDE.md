@@ -59,6 +59,20 @@ The `about` page additionally has a `gear` array: `{ category, name, image, url,
 
 After editing `pages.js`, run `npm run build`. The build fails if any listed image is missing from `photos/` (or gear image from `gear/`).
 
+## Equipment catalogue (`equipment.js`)
+
+`equipment.js` is the canonical, machine-friendly gear list — separate from the `gear` array in `pages.js` (which only feeds the human-readable About page). Each entry: `{ id, type: 'camera'|'lens', aliases: [...], name, image, description }`.
+
+During the build, `resolveEquipmentForFilenames()` in `build.js` reads each photo's `Make`/`Model`/`LensModel` EXIF tags and matches them against `aliases` to auto-tag every gallery image with `data-camera`/`data-lens`. The lightbox info panel then looks up that id in `equipment.js` to show the gear photo + description. Camera falls back to `DEFAULT_CAMERA_ID` (`canon-eos-r6`) if EXIF is missing/unrecognised; an unrecognised lens is simply omitted, never guessed.
+
+**When adding photos shot with gear not yet in `equipment.js`** (new camera body or lens):
+1. Check the photo's EXIF to get the exact alias strings: `node -e "require('exifr').parse('photos/FILENAME.jpg', ['Make','Model','LensModel']).then(console.log)"`
+2. Add a new entry to `equipment.js` with `aliases` set to the exact `Model` (camera) or `LensModel` (lens) string from EXIF — matching is exact, not fuzzy.
+3. Add the corresponding thumbnail to `gear/` (same processing as About-page gear images: trimmed/flattened to `build/photos/gear_<name>.jpg`).
+4. If the same camera/lens should also appear on the About page's arsenal, add/update the matching item in the `gear` array in `pages.js` too — the two lists are not auto-synced.
+
+To force a specific camera/lens on one image regardless of EXIF, set `equipmentOverride: { camera: 'equipment-id', lens: 'equipment-id' }` on that image's entry in `pages.js`.
+
 ## Deployment
 
 Every push triggers GitHub Actions (`deploy.yml`):
