@@ -492,8 +492,10 @@ body {
     flex: 0 0 64px;
     width: 64px;
     height: 64px;
-    object-fit: cover;
+    object-fit: contain;
+    background-color: #fff;
     border: 1px solid #eee;
+    padding: 4px;
 }
 
 .lightbox-gear-name {
