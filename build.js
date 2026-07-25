@@ -740,7 +740,8 @@ async function build() {
         'favicon-32x32.png',
         'favicon-48x48.png',
         'apple-touch-icon.png',
-        'manifest.json'
+        'manifest.json',
+        'lovkoja-mark.svg'
     ];
     
     faviconFiles.forEach(file => {

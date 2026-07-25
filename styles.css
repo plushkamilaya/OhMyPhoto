@@ -199,6 +199,28 @@ body {
     margin: 0;
 }
 
+.link-lovkoja {
+    white-space: nowrap;
+    color: #3A1F55;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(58, 31, 85, 0.35);
+    padding-bottom: 1px;
+    transition: border-color 0.3s ease, color 0.3s ease;
+}
+
+.link-lovkoja:hover {
+    color: #23133A;
+    border-color: #3A1F55;
+}
+
+.link-lovkoja-icon {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    margin-left: 3px;
+    vertical-align: -0.15em;
+}
+
 .session-split {
     display: flex;
     align-items: flex-start;
