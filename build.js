@@ -295,7 +295,7 @@ function generateAboutHTML(page) {
                     <p>Before a shoot, I often create mood boards with ideas — not to follow them strictly, but to get into the right mood and let ideas flow. It’s my way of making sure every session has its own special moments, even though those unexpected “magic shots” almost always appear on their own.</p>
                     <p>Whether it’s portraits, events or commercial projects, I always look for authenticity and emotions. For me, a good photograph is one that you can feel, not just see.</p>
                     <p>📷 My photography also documents the neighbourhood — see our <a href="/#local-commitment" data-page="local-commitment">local commitment</a> on Google Maps.</p>
-                    <p>Photography portfolio by Maria Rytikova. Part of <a href="https://lovkoja.se" target="_blank" rel="noopener noreferrer">Lövkoja</a>.</p>
+                    <p>Photography portfolio by Maria Rytikova. Part of <a href="https://lovkoja.se" target="_blank" rel="noopener noreferrer" class="link-lovkoja">Lövkoja<img src="/lovkoja-mark.svg" alt="" class="link-lovkoja-icon"></a>.</p>
                 </div>
             </div>
             <div class="about-content" style="gap: 0; padding-top: 30px;">
@@ -323,10 +323,10 @@ function generateCommunityHTML(page) {
             </div>
             <div class="about-content">
                 <div class="about-text">
-                    <p>Lövkoja Studio provides professional photography and visual content for businesses, organisations and local projects.</p>
+                    <p><a href="https://lovkoja.se" target="_blank" rel="noopener noreferrer" class="link-lovkoja">Lövkoja<img src="/lovkoja-mark.svg" alt="" class="link-lovkoja-icon"></a> Studio provides professional photography and visual content for businesses, organisations and local projects.</p>
                     <p>Alongside our commissioned work, we independently document a selected number of public spaces, local destinations and neighbourhood places that deserve better visual representation.</p>
                     <p>The photographs are published on Google Maps, helping people understand, discover and navigate the area while contributing to a more accurate and attractive digital image of the local community.</p>
-                    <p>Locations are selected independently by Lövkoja as part of our ongoing commitment to the places where we live and work.</p>
+                    <p>Locations are selected independently by <a href="https://lovkoja.se" target="_blank" rel="noopener noreferrer" class="link-lovkoja">Lövkoja<img src="/lovkoja-mark.svg" alt="" class="link-lovkoja-icon"></a> as part of our ongoing commitment to the places where we live and work.</p>
                     <a href="https://www.google.com/maps/contrib/110279442478436443087/photos" target="_blank" rel="noopener noreferrer" class="cta-link">View contributions on Google Maps</a>
                 </div>
                 <div class="community-photo">

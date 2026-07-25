@@ -31,7 +31,7 @@ const pages = [
             description: [
                 'We create images that make food desirable, spaces memorable and businesses feel more established.',
                 'The best part of Plushka is that it is part of <a href="https://lovkoja.se" target="_blank" rel="noopener noreferrer" class="link-lovkoja">Lövkoja<img src="/lovkoja-mark.svg" alt="" class="link-lovkoja-icon"></a>. Your photography can grow into a complete visual system across menus, brochures, advertising, websites, customer-facing menu areas and wider IT systems — all built around one clear understanding of your brand.',
-                'With an optional support subscription, we keep that system current: your website stays reliable, your images display beautifully, and new dishes, campaigns, menu items and small updates flow naturally into the work already in place. As your business grows, Lövkoja can extend the same system into integrations, digital infrastructure and high-load platforms.'
+                'With an optional support subscription, we keep that system current: your website stays reliable, your images display beautifully, and new dishes, campaigns, menu items and small updates flow naturally into the work already in place. As your business grows, <a href="https://lovkoja.se" target="_blank" rel="noopener noreferrer" class="link-lovkoja">Lövkoja<img src="/lovkoja-mark.svg" alt="" class="link-lovkoja-icon"></a> can extend the same system into integrations, digital infrastructure and high-load platforms.'
             ]
         },
         images: [
