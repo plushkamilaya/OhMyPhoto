@@ -373,7 +373,7 @@ function generateGalleryIntroHTML(page) {
                 <h2>${intro.heading || page.title}</h2>
             </div>
             <div class="about-content" style="gap: 0;">
-                <div class="placeholder-box">
+                <div class="intro-description">
                     ${generateIntroDescriptionHTML(intro.description)}
                 </div>
             </div>
@@ -397,7 +397,7 @@ function generateSessionsSplitHTML(page) {
                 <h2>${intro.heading || page.title}</h2>
             </div>
             <div class="about-content" style="gap: 0;">
-                <div class="placeholder-box">
+                <div class="intro-description">
                     ${generateIntroDescriptionHTML(intro.description)}
                 </div>
             </div>

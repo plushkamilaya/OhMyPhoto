@@ -185,17 +185,18 @@ body {
     font-size: 15px;
 }
 
-.placeholder-box {
+.intro-description {
     width: 100%;
-    padding: 16px;
-    border: 1px solid #eee;
-    border-radius: 8px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
 }
 
-.placeholder-box p {
+.intro-description p {
     font-size: 16px;
     line-height: 1.8;
     color: #666;
+    margin: 0;
 }
 
 .session-split {
