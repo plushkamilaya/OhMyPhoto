@@ -360,6 +360,11 @@ function generateCommunityHTML(page) {
             </div>` : ''}`;
 }
 
+function generateIntroDescriptionHTML(description) {
+    const paragraphs = Array.isArray(description) ? description : [description || ''];
+    return paragraphs.map(paragraph => `<p>${paragraph}</p>`).join('\n                    ');
+}
+
 function generateGalleryIntroHTML(page) {
     const intro = page.intro || {};
 
@@ -369,7 +374,7 @@ function generateGalleryIntroHTML(page) {
             </div>
             <div class="about-content" style="gap: 0;">
                 <div class="placeholder-box">
-                    <p>${intro.description || ''}</p>
+                    ${generateIntroDescriptionHTML(intro.description)}
                 </div>
             </div>
             <div class="gallery-grid">
@@ -393,7 +398,7 @@ function generateSessionsSplitHTML(page) {
             </div>
             <div class="about-content" style="gap: 0;">
                 <div class="placeholder-box">
-                    <p>${intro.description || ''}</p>
+                    ${generateIntroDescriptionHTML(intro.description)}
                 </div>
             </div>
             <div class="session-split">

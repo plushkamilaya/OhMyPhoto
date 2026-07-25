@@ -28,7 +28,11 @@ const pages = [
         template: 'gallery-intro',
         intro: {
             heading: 'For Business',
-            description: 'I help businesses look their best — photography, print design, websites, and small-scale visual and interior styling, all tailored to fit your brand and space.'
+            description: [
+                'We create images that make food desirable, spaces memorable and businesses feel more established.',
+                'The best part of Plushka is that it is part of <a href="https://lovkoja.se" target="_blank" rel="noopener noreferrer">Lövkoja</a>. Your photography can grow into a complete visual system across menus, brochures, advertising, websites, customer-facing menu areas and wider IT systems — all built around one clear understanding of your brand.',
+                'With an optional support subscription, we keep that system current: your website stays reliable, your images display beautifully, and new dishes, campaigns, menu items and small updates flow naturally into the work already in place. As your business grows, Lövkoja can extend the same system into integrations, digital infrastructure and high-load platforms.'
+            ]
         },
         images: [
             'ES7A6101.JPG',
