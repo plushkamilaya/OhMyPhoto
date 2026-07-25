@@ -34,6 +34,39 @@ const ENQUIRY_LABELS = {
     'license-image': 'License this image'
 };
 
+const ENQUIRY_BUTTON_VARIANTS = {
+    'book-similar-session': [
+        'Book a similar session',
+        'I want this too',
+        'Get us a session like this',
+        'Make this happen for us'
+    ],
+    'request-similar-shoot': [
+        'Request a similar shoot',
+        'We want this too',
+        'Get us something like this',
+        'Set us up with the same'
+    ],
+    'ask-print': [
+        'Ask about a print',
+        'I want this on my wall',
+        'Get me a print like this'
+    ],
+    'license-image': [
+        'License this image',
+        "I'd like to use this photo",
+        'Clear this image for use'
+    ]
+};
+
+function pickEnquiryButtonLabel(action) {
+    const variants = ENQUIRY_BUTTON_VARIANTS[action];
+    if (!variants || variants.length === 0) {
+        return ENQUIRY_LABELS[action] || '';
+    }
+    return variants[Math.floor(Math.random() * variants.length)];
+}
+
 function navigateToPage(pageName) {
     if (!pages[pageName]) return;
     
@@ -199,7 +232,7 @@ function renderLightboxPanel(image) {
 
     if (image.enquiryAction && ENQUIRY_LABELS[image.enquiryAction]) {
         enquiryBtn.hidden = false;
-        enquiryBtn.textContent = ENQUIRY_LABELS[image.enquiryAction];
+        enquiryBtn.textContent = pickEnquiryButtonLabel(image.enquiryAction);
         enquiryBtn.dataset.action = image.enquiryAction;
     } else {
         enquiryBtn.hidden = true;
