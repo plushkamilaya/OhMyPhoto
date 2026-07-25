@@ -200,20 +200,16 @@ body {
 }
 
 .link-lovkoja {
-    display: inline-block;
     white-space: nowrap;
     color: #3A1F55;
     text-decoration: none;
-    background-color: #F3DFF1;
     border-bottom: 1px solid rgba(58, 31, 85, 0.35);
-    border-radius: 10px;
-    padding: 2px 8px 3px;
-    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+    padding-bottom: 1px;
+    transition: border-color 0.3s ease, color 0.3s ease;
 }
 
 .link-lovkoja:hover {
     color: #23133A;
-    background-color: #E2B2DE;
     border-color: #3A1F55;
 }
 
