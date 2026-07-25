@@ -17,7 +17,7 @@
     "static",
     "generator"
   ],
-  "author": "Mary Rytikova",
+  "author": "Maria Rytikova",
   "license": "MIT",
   "dependencies": {
     "sharp": "^0.32.6"

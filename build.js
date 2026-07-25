@@ -295,7 +295,7 @@ function generateAboutHTML(page) {
                     <p>Before a shoot, I often create mood boards with ideas — not to follow them strictly, but to get into the right mood and let ideas flow. It’s my way of making sure every session has its own special moments, even though those unexpected “magic shots” almost always appear on their own.</p>
                     <p>Whether it’s portraits, events or commercial projects, I always look for authenticity and emotions. For me, a good photograph is one that you can feel, not just see.</p>
                     <p>📷 My photography also documents the neighbourhood — see our <a href="/#local-commitment" data-page="local-commitment">local commitment</a> on Google Maps.</p>
-                    <p>Photography portfolio by Mariia Rytikova. Part of <a href="https://lovkoja.se" target="_blank" rel="noopener noreferrer">Lövkoja</a>.</p>
+                    <p>Photography portfolio by Maria Rytikova. Part of <a href="https://lovkoja.se" target="_blank" rel="noopener noreferrer">Lövkoja</a>.</p>
                 </div>
             </div>
             <div class="about-content" style="gap: 0; padding-top: 30px;">
@@ -330,7 +330,7 @@ function generateCommunityHTML(page) {
                     <a href="https://www.google.com/maps/contrib/110279442478436443087/photos" target="_blank" rel="noopener noreferrer" class="cta-link">View contributions on Google Maps</a>
                 </div>
                 <div class="community-photo">
-                    <img src="${previewSrc}${previewHash ? `?v=${previewHash}` : ''}" data-img-name="${photo}" data-full-src="${fullSrc}${fullHash ? `?v=${fullHash}` : ''}" alt="Mariia Rytikova's Local Guide contributions on Google Maps">
+                    <img src="${previewSrc}${previewHash ? `?v=${previewHash}` : ''}" data-img-name="${photo}" data-full-src="${fullSrc}${fullHash ? `?v=${fullHash}` : ''}" alt="Maria Rytikova's Local Guide contributions on Google Maps">
                 </div>
             </div>
             <div class="about-content" style="gap: 0; padding-top: 30px;">

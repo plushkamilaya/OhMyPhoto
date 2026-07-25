@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-Static site generator for Mary Rytikova's photography portfolio at plushka.se. The build script processes source images, injects data into an HTML template, and minifies CSS/JS — producing a self-contained SPA in `build/`.
+Static site generator for Maria Rytikova's photography portfolio at plushka.se. The build script processes source images, injects data into an HTML template, and minifies CSS/JS — producing a self-contained SPA in `build/`.
 
 ## Commands
 
