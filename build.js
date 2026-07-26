@@ -188,13 +188,15 @@ function generateGalleryHTML(images, page) {
         const title = typeof image === 'object' ? image.title : undefined;
         const caption = typeof image === 'object' ? image.caption : undefined;
         const enquiryAction = (typeof image === 'object' && image.enquiryAction) || defaultEnquiryAction;
+        const focus = typeof image === 'object' ? image.focus : undefined;
 
         const extraAttrs = [
             ` data-camera="${cameraId}"`,
             lensId ? ` data-lens="${lensId}"` : '',
             title ? ` data-title="${escapeAttr(title)}"` : '',
             caption ? ` data-caption="${escapeAttr(caption)}"` : '',
-            enquiryAction ? ` data-enquiry="${enquiryAction}"` : ''
+            enquiryAction ? ` data-enquiry="${enquiryAction}"` : '',
+            focus ? ` style="object-position: ${escapeAttr(focus)};"` : ''
         ].join('');
 
         return `
