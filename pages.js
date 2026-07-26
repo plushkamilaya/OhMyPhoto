@@ -70,12 +70,16 @@ const pages = [
         sessionOptions: [
             {
                 id: 'mini-sessions',
-                heading: 'Mini Sessions',
+                heading: 'Mini Session',
+                details: '15–20 min | 5 photos',
+                price: '500 SEK',
                 description: 'Quick, focused sessions built around one clear idea — perfect for a&nbsp;fresh portrait, a&nbsp;seasonal update, or a&nbsp;small milestone.'
             },
             {
                 id: 'story-sessions',
-                heading: 'Story Sessions',
+                heading: 'Story Session',
+                details: '1.5–2 hours | 20+ photos',
+                price: '2,500 SEK',
                 description: 'Longer, narrative-style sessions that follow a&nbsp;day, an&nbsp;event, or a&nbsp;milestone from start to finish — the&nbsp;full story, not just a&nbsp;single frame.'
             }
         ]

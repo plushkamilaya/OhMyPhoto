@@ -162,8 +162,7 @@ body {
     margin-bottom: 0;
 }
 
-.cta-link,
-.session-btn {
+.cta-link {
     background-color: #f8f9fa;
     border: 1px solid #333;
     border-radius: 4px;
@@ -171,8 +170,7 @@ body {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.cta-link:hover,
-.session-btn:hover {
+.cta-link:hover {
     background-color: #333;
     color: #fff;
 }
@@ -252,27 +250,225 @@ body {
     margin: 0;
 }
 
-.session-btn {
+/* Session service cards --------------------------------------------- */
+/* Default state: clean, flat, editorial. No balloon styling is visible
+   until :hover / :focus-visible / :active (see the hover-capable media
+   block below). Size and hover-color tuning happens entirely through
+   the custom properties set on the --mini / --story modifiers. */
+
+.session-card {
+    --session-card-width: 100%;
+    --session-card-min-height: 165px;
+    --balloon-highlight: #fdfbf8;
+    --balloon-mid: #e4ddd0;
+    --balloon-base: #cfc6b4;
+    --balloon-shadow: #8f8672;
+    --balloon-seam: #d8cfbf;
+
+    align-self: flex-start;
     display: block;
-    width: 100%;
-    text-align: left;
-    padding: 20px 22px;
-    cursor: pointer;
+    box-sizing: border-box;
+    width: var(--session-card-width);
+    min-height: var(--session-card-min-height);
+    padding: 22px 26px;
+    background: #faf6f1;
+    border: 1px solid #e2ddd3;
+    border-radius: 4px;
+    color: #2a2a2a;
+    text-decoration: none;
     font-family: inherit;
+    cursor: pointer;
+    position: relative;
+    transform: translateY(0) scale(1) rotate(0deg);
+    transition:
+        border-radius 640ms cubic-bezier(0.22, 1, 0.36, 1),
+        background 640ms cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 640ms cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 640ms cubic-bezier(0.22, 1, 0.36, 1),
+        transform 640ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.session-btn-title {
-    display: block;
-    font-size: 18px;
+.session-card--mini {
+    --session-card-width: 80%;
+    --session-card-min-height: 135px;
+    --balloon-highlight: #fffaf7;
+    --balloon-mid: #f6d7c9;
+    --balloon-base: #f2c2ca;
+    --balloon-shadow: #b97985;
+    --balloon-seam: #e7b7bd;
+}
+
+.session-card--story {
+    --session-card-width: 100%;
+    --session-card-min-height: 175px;
+    --balloon-highlight: #f7f6fc;
+    --balloon-mid: #cfc9e8;
+    --balloon-base: #b9b2da;
+    --balloon-shadow: #6f6398;
+    --balloon-seam: #a89dcd;
+}
+
+.session-card-surface {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+    z-index: 1;
+}
+
+.session-card-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.session-card-title {
+    font-size: 19px;
     font-weight: 600;
-    margin-bottom: 6px;
 }
 
-.session-btn-desc {
-    display: block;
+.session-card-price {
+    font-size: 15px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.session-card-details {
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    color: #726b60;
+}
+
+.session-card-desc {
     font-size: 14px;
     line-height: 1.6;
-    opacity: 0.8;
+    color: #55504a;
+}
+
+.session-card-cta {
+    margin-top: 4px;
+    font-size: 12px;
+    letter-spacing: 0.03em;
+    color: #948c7f;
+    transition: color 640ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Sealed foil tab beneath the card - invisible until hover/focus. */
+.session-card::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -7px;
+    width: 22px;
+    height: 10px;
+    background: var(--balloon-seam);
+    border-radius: 3px;
+    opacity: 0;
+    transform: translateX(-50%) scaleY(0.6);
+    transition: opacity 640ms cubic-bezier(0.22, 1, 0.36, 1), transform 640ms cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+}
+
+@keyframes session-card-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-2px); }
+}
+
+/* The balloon transformation itself. Hover is gated to devices that can
+   actually hover, so a touch tap never leaves a card stuck mid-effect;
+   focus-visible runs everywhere so keyboard users get the same cue. */
+@media (hover: hover) and (pointer: fine) {
+    .session-card:hover {
+        border-color: transparent;
+        border-radius: 20px;
+        transform: translateY(-4px) scale(1.012) rotate(0.35deg);
+        background:
+            radial-gradient(120% 90% at 24% 18%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 42%),
+            radial-gradient(140% 120% at 76% 88%, var(--balloon-shadow) 0%, transparent 55%),
+            radial-gradient(160% 140% at 50% 45%, var(--balloon-highlight) 0%, var(--balloon-mid) 45%, var(--balloon-base) 100%);
+        box-shadow:
+            inset 0 0 0 1px var(--balloon-seam),
+            inset 0 1px 3px rgba(255, 255, 255, 0.65),
+            inset 0 -14px 22px -6px rgba(0, 0, 0, 0.16),
+            0 20px 32px -12px rgba(0, 0, 0, 0.28);
+    }
+
+    .session-card:hover .session-card-surface {
+        animation: session-card-float 3.4s ease-in-out infinite;
+    }
+
+    .session-card:hover .session-card-cta {
+        color: #6b6455;
+    }
+
+    .session-card:hover::after {
+        opacity: 1;
+        transform: translateX(-50%) scaleY(1);
+    }
+
+    .session-card:active {
+        transform: translateY(-2px) scale(0.998) rotate(0.15deg);
+        box-shadow:
+            inset 0 0 0 1px var(--balloon-seam),
+            inset 0 1px 2px rgba(255, 255, 255, 0.5),
+            inset 0 -8px 14px -6px rgba(0, 0, 0, 0.14),
+            0 10px 18px -10px rgba(0, 0, 0, 0.22);
+        transition-duration: 160ms;
+    }
+}
+
+.session-card:focus-visible {
+    border-color: transparent;
+    border-radius: 20px;
+    transform: translateY(-4px) scale(1.012) rotate(0.35deg);
+    background:
+        radial-gradient(120% 90% at 24% 18%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 42%),
+        radial-gradient(140% 120% at 76% 88%, var(--balloon-shadow) 0%, transparent 55%),
+        radial-gradient(160% 140% at 50% 45%, var(--balloon-highlight) 0%, var(--balloon-mid) 45%, var(--balloon-base) 100%);
+    box-shadow:
+        inset 0 0 0 1px var(--balloon-seam),
+        inset 0 1px 3px rgba(255, 255, 255, 0.65),
+        inset 0 -14px 22px -6px rgba(0, 0, 0, 0.16),
+        0 20px 32px -12px rgba(0, 0, 0, 0.28),
+        0 0 0 2px #2a2a2a,
+        0 0 0 6px #faf6f1;
+    outline: none;
+}
+
+.session-card:focus-visible .session-card-surface {
+    animation: session-card-float 3.4s ease-in-out infinite;
+}
+
+.session-card:focus-visible::after {
+    opacity: 1;
+    transform: translateX(-50%) scaleY(1);
+}
+
+/* Touch devices: never trigger the balloon on tap, just a light press. */
+@media not all and (hover: hover) {
+    .session-card:active {
+        transform: scale(0.985);
+        transition-duration: 150ms;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .session-card,
+    .session-card-surface,
+    .session-card::after {
+        animation: none !important;
+    }
+
+    .session-card {
+        transition-duration: 160ms;
+    }
+
+    .session-card:hover,
+    .session-card:focus-visible,
+    .session-card:active {
+        transform: none;
+    }
 }
 
 .community-layout {
@@ -763,15 +959,24 @@ body {
         grid-template-columns: 1fr;
     }
 
-    .session-btn {
-        padding: 14px 16px;
+    .session-card {
+        --session-card-width: 100%;
+        padding: 18px 20px;
     }
 
-    .session-btn-title {
-        font-size: 16px;
+    .session-card--mini {
+        --session-card-min-height: 115px;
     }
 
-    .session-btn-desc {
+    .session-card--story {
+        --session-card-min-height: 150px;
+    }
+
+    .session-card-title {
+        font-size: 17px;
+    }
+
+    .session-card-desc {
         font-size: 13px;
     }
 }

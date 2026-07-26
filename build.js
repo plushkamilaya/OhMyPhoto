@@ -43,6 +43,19 @@ function buildMailtoHref(lang) {
     return `mailto:${contact.address}?subject=${subject}&body=${body}`;
 }
 
+// Same hello@plushka.se inbox as buildMailtoHref, but pre-filled for a
+// specific session card rather than the generic For Business enquiry.
+function buildSessionMailtoHref(lang, sessionTitle) {
+    const contact = CONTACT_MAILTO[lang] || CONTACT_MAILTO.en;
+    const subject = lang === 'sv' ? `${sessionTitle} – förfrågan` : `${sessionTitle} enquiry`;
+    const greeting = lang === 'sv' ? 'Hej,' : 'Hi,';
+    const lead = lang === 'sv'
+        ? `Jag är intresserad av en ${sessionTitle.toLowerCase()} — `
+        : `I'm interested in a ${sessionTitle.toLowerCase()} — `;
+    const body = `${greeting}\n\n${lead}`;
+    return `mailto:${contact.address}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
 function imgSrc(image) {
     return typeof image === 'string' ? image : image.src;
 }
@@ -401,15 +414,31 @@ function generateGalleryIntroHTML(page) {
             </div>`;
 }
 
+const SESSION_CARD_MODIFIER = {
+    'mini-sessions': 'session-card--mini',
+    'story-sessions': 'session-card--story'
+};
+
 function generateSessionsSplitHTML(page) {
     const intro = page.intro || {};
     const options = page.sessionOptions || [];
 
-    const buttons = options.map(option => `
-                    <button type="button" class="session-btn">
-                        <span class="session-btn-title">${option.heading}</span>
-                        <span class="session-btn-desc">${option.description}</span>
-                    </button>`).join('');
+    const cards = options.map(option => {
+        const modifier = SESSION_CARD_MODIFIER[option.id] || '';
+        const href = buildSessionMailtoHref('en', option.heading);
+        return `
+                    <a href="${href}" class="session-card${modifier ? ` ${modifier}` : ''}">
+                        <span class="session-card-surface">
+                            <span class="session-card-row">
+                                <span class="session-card-title">${option.heading}</span>
+                                <span class="session-card-price">${option.price}</span>
+                            </span>
+                            <span class="session-card-details">${option.details}</span>
+                            <span class="session-card-desc">${option.description}</span>
+                            <span class="session-card-cta">View session →</span>
+                        </span>
+                    </a>`;
+    }).join('');
 
     return `
             <div class="about-content" style="gap: 0; padding-top: 40px;">
@@ -422,7 +451,7 @@ function generateSessionsSplitHTML(page) {
                 <div class="session-actions">
                     <div class="session-intro">
                         ${generateIntroDescriptionHTML(intro.description)}
-                    </div>${buttons}
+                    </div>${cards}
                 </div>
             </div>`;
 }
