@@ -180,6 +180,55 @@ async function processImages() {
     }
 }
 
+// Average pixel color per page (keyed by page.name), sampled from the
+// already-generated preview images of a page's gallery. Used to tint
+// decorative hover effects (e.g. the sessions-split balloon buttons)
+// with a color pulled from the photos next to them, rather than a
+// fixed brand color.
+const accentColorCache = new Map();
+
+async function computeAverageColor(filenames) {
+    let rSum = 0, gSum = 0, bSum = 0, count = 0;
+
+    for (const filename of filenames) {
+        const previewPath = path.join(buildPhotosDir, `preview_${filename}`);
+        if (!fs.existsSync(previewPath)) {
+            continue;
+        }
+        try {
+            const stats = await sharp(previewPath).stats();
+            rSum += stats.channels[0].mean;
+            gSum += stats.channels[1].mean;
+            bSum += stats.channels[2].mean;
+            count++;
+        } catch (error) {
+            // Skip unreadable images - fall back on whatever averaged
+        }
+    }
+
+    if (count === 0) {
+        return null;
+    }
+
+    return {
+        r: Math.round(rSum / count),
+        g: Math.round(gSum / count),
+        b: Math.round(bSum / count)
+    };
+}
+
+async function computeAccentColors() {
+    for (const page of pages) {
+        if (page.template === 'sessions-split' && page.images && page.images.length > 0) {
+            const filenames = page.images.map(imgSrc).map(src => path.basename(src));
+            const color = await computeAverageColor(filenames);
+            if (color) {
+                accentColorCache.set(page.name, color);
+            }
+        }
+    }
+}
+
 const template = fs.readFileSync('template.html', 'utf8');
 
 function generateGalleryHTML(images, page) {
@@ -405,11 +454,17 @@ function generateSessionsSplitHTML(page) {
     const intro = page.intro || {};
     const options = page.sessionOptions || [];
 
-    const buttons = options.map(option => `
-                    <button type="button" class="session-btn">
+    const buttons = options.map(option => {
+        const sizeClass = option.id === 'story-sessions' ? ' session-btn--large' : '';
+        return `
+                    <button type="button" class="session-btn${sizeClass}">
                         <span class="session-btn-title">${option.heading}</span>
                         <span class="session-btn-desc">${option.description}</span>
-                    </button>`).join('');
+                    </button>`;
+    }).join('');
+
+    const accent = accentColorCache.get(page.name);
+    const accentStyle = accent ? ` style="--balloon-color: rgb(${accent.r}, ${accent.g}, ${accent.b});"` : '';
 
     return `
             <div class="about-content" style="gap: 0; padding-top: 40px;">
@@ -419,7 +474,7 @@ function generateSessionsSplitHTML(page) {
                 <div class="session-gallery gallery-grid">
                     ${generateGalleryHTML(page.images, page)}
                 </div>
-                <div class="session-actions">
+                <div class="session-actions"${accentStyle}>
                     <div class="session-intro">
                         ${generateIntroDescriptionHTML(intro.description)}
                     </div>${buttons}
@@ -707,7 +762,7 @@ async function build() {
 
     await processImages();
     await processGearImages();
-
+    await computeAccentColors();
 
     minifyCSS('./styles.css', path.join(buildDir, 'styles.css'));
     const cssHash = getFileHash(path.join(buildDir, 'styles.css'));
