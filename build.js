@@ -382,16 +382,14 @@ function generateSessionsSplitHTML(page) {
             <div class="about-content" style="gap: 0; padding-top: 40px;">
                 <h2>${intro.heading || page.title}</h2>
             </div>
-            <div class="about-content" style="gap: 0;">
-                <div class="intro-description">
-                    ${generateIntroDescriptionHTML(intro.description)}
-                </div>
-            </div>
             <div class="session-split">
                 <div class="session-gallery gallery-grid">
                     ${generateGalleryHTML(page.images, page)}
                 </div>
-                <div class="session-actions">${buttons}
+                <div class="session-actions">
+                    <div class="session-intro">
+                        ${generateIntroDescriptionHTML(intro.description)}
+                    </div>${buttons}
                 </div>
             </div>`;
 }

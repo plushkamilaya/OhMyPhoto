@@ -245,6 +245,13 @@ body {
     padding: 10px 0;
 }
 
+.session-intro p {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #666;
+    margin: 0;
+}
+
 .session-btn {
     display: block;
     width: 100%;
