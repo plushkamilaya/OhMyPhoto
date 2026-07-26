@@ -321,34 +321,34 @@ function generateCommunityHTML(page) {
             <div class="about-content" style="gap: 0; padding-top: 40px;">
                 <h2>Local Commitment</h2>
             </div>
-            <div class="about-content">
-                <div class="about-text">
-                    <p><a href="https://lovkoja.se" target="_blank" rel="noopener noreferrer" class="link-lovkoja">Lövkoja<img src="/lovkoja-mark.svg" alt="" class="link-lovkoja-icon"></a> Studio provides professional photography and visual content for businesses, organisations and local projects.</p>
-                    <p>Alongside our commissioned work, we independently document a selected number of public spaces, local destinations and neighbourhood places that deserve better visual representation.</p>
-                    <p>The photographs are published on Google Maps, helping people understand, discover and navigate the area while contributing to a more accurate and attractive digital image of the local community.</p>
+            <div class="community-layout">
+                <div class="community-text-1">
+                    <p>Alongside our commissioned work, we independently photograph public spaces, local destinations and neighbourhood places that we notice and enjoy in everyday life. We share the photographs on Google Maps to give people a clear, current sense of each place before they visit and to make the local area easier to explore.</p>
+                </div>
+                <div class="community-text-2">
                     <p>Locations are selected independently by <a href="https://lovkoja.se" target="_blank" rel="noopener noreferrer" class="link-lovkoja">Lövkoja<img src="/lovkoja-mark.svg" alt="" class="link-lovkoja-icon"></a> as part of our ongoing commitment to the places where we live and work.</p>
-                    <a href="https://www.google.com/maps/contrib/110279442478436443087/photos" target="_blank" rel="noopener noreferrer" class="cta-link">View contributions on Google Maps</a>
                 </div>
                 <div class="community-photo">
                     <img src="${previewSrc}${previewHash ? `?v=${previewHash}` : ''}" data-img-name="${photo}" data-full-src="${fullSrc}${fullHash ? `?v=${fullHash}` : ''}" alt="Maria Rytikova's Local Guide contributions on Google Maps">
                 </div>
-            </div>
-            <div class="about-content" style="gap: 0; padding-top: 30px;">
-                <h2>Local visual impact</h2>
-            </div>
-            <div class="about-content" style="gap: 0;">
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <span class="stat-number">500,000+</span>
-                        <span class="stat-label">photo views on Google Maps</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">Local places</span>
-                        <span class="stat-label">documented and shared</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">Täby</span>
-                        <span class="stat-label">and the Stockholm area</span>
+                <div class="community-cta">
+                    <a href="https://www.google.com/maps/contrib/110279442478436443087/photos" target="_blank" rel="noopener noreferrer" class="cta-link" id="community-maps-cta">View contributions on Google Maps</a>
+                </div>
+                <div class="community-stats">
+                    <h2>Local visual impact</h2>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-number">500,000+</span>
+                            <span class="stat-label">photo views on Google Maps</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">Local places</span>
+                            <span class="stat-label">documented and shared</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">Täby</span>
+                            <span class="stat-label">and the Stockholm area</span>
+                        </div>
                     </div>
                 </div>
             </div>${page.galleryImages && page.galleryImages.length > 0 ? `

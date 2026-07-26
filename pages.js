@@ -85,7 +85,7 @@ const pages = [
         title: 'Local Commitment',
         template: 'community',
         images: [
-            'google-maps-local-guide.jpg'
+            'google-maps-profile.jpg'
         ],
         galleryImages: [
             'ES7A2999.jpg',
