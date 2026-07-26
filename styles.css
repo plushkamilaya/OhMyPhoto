@@ -188,12 +188,8 @@ body {
 .intro-description {
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 24px;
-}
-
-.intro-description p:first-child {
-    grid-column: 1 / -1;
 }
 
 .intro-description p {
@@ -279,12 +275,14 @@ body {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-areas:
+        "photo lead  lead"
         "photo text1 text2"
-        "photo inset  inset";
+        "photo inset inset";
     gap: 30px 40px;
     align-items: start;
 }
 
+.community-lead { grid-area: lead; }
 .community-text-1 { grid-area: text1; }
 .community-text-2 { grid-area: text2; }
 .community-photo { grid-area: photo; }
@@ -296,6 +294,7 @@ body {
     gap: 0;
 }
 
+.community-lead p,
 .community-text-1 p,
 .community-text-2 p {
     font-size: 16px;
@@ -304,6 +303,7 @@ body {
     margin: 0 0 20px;
 }
 
+.community-lead p:last-child,
 .community-text-1 p:last-child,
 .community-text-2 p:last-child {
     margin-bottom: 0;
@@ -731,6 +731,7 @@ body {
         grid-template-columns: 1fr;
         grid-template-areas:
             "photo"
+            "lead"
             "text1"
             "text2"
             "inset";
@@ -761,10 +762,6 @@ body {
 
     .session-btn-desc {
         font-size: 13px;
-    }
-
-    .intro-description {
-        grid-template-columns: 1fr;
     }
 }
 
