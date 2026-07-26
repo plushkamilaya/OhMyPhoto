@@ -284,7 +284,7 @@ body {
 
 .community-lead { grid-area: lead; }
 .community-text-1 { grid-area: text1; }
-.community-text-2 { grid-area: text2; align-self: end; }
+.community-text-2 { grid-area: text2; align-self: center; text-align: center; }
 .community-photo { grid-area: photo; }
 
 .community-gallery-inset {

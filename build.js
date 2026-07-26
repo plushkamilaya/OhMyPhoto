@@ -330,14 +330,14 @@ function generateCommunityHTML(page) {
                     <img src="${previewSrc}${previewHash ? `?v=${previewHash}` : ''}" data-img-name="${photo}" data-full-src="${fullSrc}${fullHash ? `?v=${fullHash}` : ''}" alt="Maria Rytikova's Local Guide contributions on Google Maps">
                 </div>
                 <div class="community-lead">
-                    <p>Alongside our commissioned work, we independently photograph public spaces, local destinations and neighbourhood places that we notice and enjoy in everyday life. We share the&nbsp;photographs on Google Maps to give people a&nbsp;clear, current sense of each place before they visit and to make the&nbsp;local area easier to explore.</p>
+                    <p>Alongside our commissioned work, we independently photograph public spaces, local destinations and neighbourhood places that we notice and enjoy in&nbsp;everyday life. We share the&nbsp;photographs on&nbsp;Google Maps to&nbsp;give people a&nbsp;clear, current sense of&nbsp;each place before they visit and to&nbsp;make the&nbsp;local area easier to&nbsp;explore.</p>
                 </div>
                 <div class="community-text-1">
-                    <p>Locations are selected independently by <a href="https://lovkoja.se" target="_blank" rel="noopener noreferrer" class="link-lovkoja">Lövkoja<img src="/lovkoja-mark.svg" alt="" class="link-lovkoja-icon"></a> as part of our ongoing commitment to the&nbsp;places where we live and work.</p>
-                    <p class="community-stat-line">500,000+ people have already stopped to look at these photos on Google Maps.</p>
+                    <p>Locations are selected independently by&nbsp;<a href="https://lovkoja.se" target="_blank" rel="noopener noreferrer" class="link-lovkoja">Lövkoja<img src="/lovkoja-mark.svg" alt="" class="link-lovkoja-icon"></a> as&nbsp;part of&nbsp;our ongoing commitment to&nbsp;the&nbsp;places where we live and work.</p>
+                    <p class="community-stat-line">500,000+ people have already stopped to&nbsp;look at&nbsp;these photos on&nbsp;Google Maps.</p>
                 </div>
                 <div class="community-text-2">
-                    <a href="https://www.google.com/maps/contrib/110279442478436443087/photos" target="_blank" rel="noopener noreferrer" class="cta-link">I want to see this too</a>
+                    <a href="https://www.google.com/maps/contrib/110279442478436443087/photos" target="_blank" rel="noopener noreferrer" class="cta-link">I want to&nbsp;see this too</a>
                 </div>${insetImages.length > 0 ? `
                 <div class="community-gallery-inset">
                     ${generateGalleryHTML(insetImages, page)}
