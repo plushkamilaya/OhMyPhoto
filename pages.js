@@ -61,11 +61,11 @@ const pages = [
             'IMG_4172-1.jpg',
             'IMG_2724.JPG',
             'IMG_3408.jpg',
-            'IMG_6146.jpg',
+            'IMG_6213.JPG',
             'IMG_3937-1.jpg',
             'IMG_4152_1.jpg',
             'IMG_2433.JPG',
-            'IMG_6213.JPG'
+            'IMG_6146.jpg'
         ],
         sessionOptions: [
             {
