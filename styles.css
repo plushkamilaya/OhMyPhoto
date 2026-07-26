@@ -274,18 +274,13 @@ body {
     padding: 10px 20px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-template-areas:
-        "text1 text2 photo"
-        "cta   cta   photo"
-        "stats stats photo";
+    grid-template-areas: "text1 text2 photo";
     gap: 30px 40px;
     align-items: start;
 }
 
 .community-text-1 { grid-area: text1; }
 .community-text-2 { grid-area: text2; }
-.community-cta { grid-area: cta; }
-.community-stats { grid-area: stats; }
 .community-photo { grid-area: photo; }
 
 .community-text-1 p,
@@ -293,14 +288,16 @@ body {
     font-size: 16px;
     line-height: 1.8;
     color: #666;
-    margin: 0;
+    margin: 0 0 20px;
 }
 
-.community-stats h2 {
-    font-size: 24px;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 16px;
+.community-text-1 p:last-child,
+.community-text-2 p:last-child {
+    margin-bottom: 0;
+}
+
+.community-stat-line {
+    font-style: italic;
 }
 
 .community-photo img {
@@ -311,34 +308,6 @@ body {
     border: 1px solid #eee;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     cursor: pointer;
-}
-
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 16px;
-    width: 100%;
-}
-
-.stat-item {
-    text-align: center;
-    padding: 24px 16px;
-    border: 1px solid #eee;
-    border-radius: 8px;
-}
-
-.stat-number {
-    display: block;
-    font-size: 26px;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 6px;
-}
-
-.stat-label {
-    display: block;
-    font-size: 14px;
-    color: #666;
 }
 
 .gear-grid {
@@ -750,8 +719,6 @@ body {
         grid-template-areas:
             "text1"
             "text2"
-            "cta"
-            "stats"
             "photo";
         gap: 24px;
         padding: 20px;

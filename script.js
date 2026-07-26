@@ -67,19 +67,6 @@ function pickEnquiryButtonLabel(action) {
     return variants[Math.floor(Math.random() * variants.length)];
 }
 
-const COMMUNITY_CTA_VARIANTS = [
-    'View contributions on Google Maps',
-    'Go see for yourself',
-    'Take a peek on Google Maps',
-    'Explore the spots we\'ve shot'
-];
-
-function updateCommunityCta() {
-    const btn = document.getElementById('community-maps-cta');
-    if (!btn) return;
-    btn.textContent = COMMUNITY_CTA_VARIANTS[Math.floor(Math.random() * COMMUNITY_CTA_VARIANTS.length)];
-}
-
 function navigateToPage(pageName) {
     if (!pages[pageName]) return;
 
@@ -91,7 +78,6 @@ function navigateToPage(pageName) {
     updateNavigation();
     updateImages();
     setupEventListeners();
-    updateCommunityCta();
 
     window.scrollTo(0, 0);
 

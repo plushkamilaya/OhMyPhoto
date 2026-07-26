@@ -327,29 +327,11 @@ function generateCommunityHTML(page) {
                 </div>
                 <div class="community-text-2">
                     <p>Locations are selected independently by <a href="https://lovkoja.se" target="_blank" rel="noopener noreferrer" class="link-lovkoja">Lövkoja<img src="/lovkoja-mark.svg" alt="" class="link-lovkoja-icon"></a> as part of our ongoing commitment to the places where we live and work.</p>
+                    <p class="community-stat-line">500,000+ people have already stopped to look at these photos on Google Maps.</p>
+                    <a href="https://www.google.com/maps/contrib/110279442478436443087/photos" target="_blank" rel="noopener noreferrer" class="cta-link">I want to see this too</a>
                 </div>
                 <div class="community-photo">
                     <img src="${previewSrc}${previewHash ? `?v=${previewHash}` : ''}" data-img-name="${photo}" data-full-src="${fullSrc}${fullHash ? `?v=${fullHash}` : ''}" alt="Maria Rytikova's Local Guide contributions on Google Maps">
-                </div>
-                <div class="community-cta">
-                    <a href="https://www.google.com/maps/contrib/110279442478436443087/photos" target="_blank" rel="noopener noreferrer" class="cta-link" id="community-maps-cta">View contributions on Google Maps</a>
-                </div>
-                <div class="community-stats">
-                    <h2>Local visual impact</h2>
-                    <div class="stats-grid">
-                        <div class="stat-item">
-                            <span class="stat-number">500,000+</span>
-                            <span class="stat-label">photo views on Google Maps</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-number">Local places</span>
-                            <span class="stat-label">documented and shared</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-number">Täby</span>
-                            <span class="stat-label">and the Stockholm area</span>
-                        </div>
-                    </div>
                 </div>
             </div>${page.galleryImages && page.galleryImages.length > 0 ? `
             <div class="about-content" style="gap: 0; padding-top: 30px;">
