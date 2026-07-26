@@ -86,10 +86,6 @@ const pages = [
         template: 'community',
         images: [
             'google-maps-profile.jpg'
-        ],
-        galleryImages: [
-            'ES7A2999.jpg',
-            'ES7A3168-1.jpg'
         ]
     },
     {
