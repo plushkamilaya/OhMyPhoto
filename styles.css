@@ -274,7 +274,9 @@ body {
     padding: 10px 20px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-template-areas: "text1 text2 photo";
+    grid-template-areas:
+        "photo text1 text2"
+        "photo inset  inset";
     gap: 30px 40px;
     align-items: start;
 }
@@ -282,6 +284,13 @@ body {
 .community-text-1 { grid-area: text1; }
 .community-text-2 { grid-area: text2; }
 .community-photo { grid-area: photo; }
+
+.community-gallery-inset {
+    grid-area: inset;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0;
+}
 
 .community-text-1 p,
 .community-text-2 p {
@@ -717,9 +726,10 @@ body {
     .community-layout {
         grid-template-columns: 1fr;
         grid-template-areas:
+            "photo"
             "text1"
             "text2"
-            "photo";
+            "inset";
         gap: 24px;
         padding: 20px;
     }
