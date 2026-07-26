@@ -20,6 +20,29 @@ const DEFAULT_ENQUIRY_ACTION = {
 
 const DEFAULT_CAMERA_ID = 'canon-eos-r6';
 
+// English is the only site language live today; the sv entry is kept ready
+// for when a Swedish version of the site ships, so the mailto link only
+// needs a lang switch, not new copy.
+const CONTACT_MAILTO = {
+    en: {
+        address: 'hello@plushka.se',
+        subject: 'Enquiry from plushka.se',
+        body: 'Hi,\n\nI\'m reaching out after visiting plushka.se — '
+    },
+    sv: {
+        address: 'hello@plushka.se',
+        subject: 'Förfrågan från plushka.se',
+        body: 'Hej,\n\nJag hör av mig efter att ha besökt plushka.se — '
+    }
+};
+
+function buildMailtoHref(lang) {
+    const contact = CONTACT_MAILTO[lang] || CONTACT_MAILTO.en;
+    const subject = encodeURIComponent(contact.subject);
+    const body = encodeURIComponent(contact.body);
+    return `mailto:${contact.address}?subject=${subject}&body=${body}`;
+}
+
 function imgSrc(image) {
     return typeof image === 'string' ? image : image.src;
 }
@@ -348,13 +371,21 @@ function generateCommunityHTML(page) {
             </div>` : ''}`;
 }
 
-function generateIntroDescriptionHTML(description) {
+function generateIntroDescriptionHTML(description, extraByIndex = {}) {
     const paragraphs = Array.isArray(description) ? description : [description || ''];
-    return paragraphs.map(paragraph => `<p>${paragraph}</p>`).join('\n                    ');
+    return paragraphs.map((paragraph, index) => {
+        const extra = extraByIndex[index] || '';
+        return `<div class="intro-description-item"><p>${paragraph}</p>${extra}</div>`;
+    }).join('\n                    ');
 }
 
 function generateGalleryIntroHTML(page) {
     const intro = page.intro || {};
+    const extraByIndex = {};
+
+    if (page.name === 'for-business') {
+        extraByIndex[0] = `<a href="${buildMailtoHref('en')}" class="cta-link">Write to us</a>`;
+    }
 
     return `
             <div class="about-content" style="gap: 0; padding-top: 40px;">
@@ -362,7 +393,7 @@ function generateGalleryIntroHTML(page) {
             </div>
             <div class="about-content" style="gap: 0;">
                 <div class="intro-description">
-                    ${generateIntroDescriptionHTML(intro.description)}
+                    ${generateIntroDescriptionHTML(intro.description, extraByIndex)}
                 </div>
             </div>
             <div class="gallery-grid">
