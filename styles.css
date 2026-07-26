@@ -271,15 +271,23 @@ body {
 .community-layout {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 10px 20px;
+    padding: 40px 20px 10px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-areas:
-        "photo lead  lead"
-        "photo text1 text2"
-        "photo inset inset";
+        "photo heading heading"
+        "photo lead    lead"
+        "photo text1   text2"
+        "photo inset   inset";
     gap: 30px 40px;
     align-items: start;
+}
+
+.community-heading { grid-area: heading; }
+.community-heading h2 {
+    font-size: 32px;
+    font-weight: 600;
+    color: #333;
 }
 
 .community-lead { grid-area: lead; }
@@ -730,6 +738,7 @@ body {
     .community-layout {
         grid-template-columns: 1fr;
         grid-template-areas:
+            "heading"
             "photo"
             "lead"
             "text1"

@@ -322,12 +322,12 @@ function generateCommunityHTML(page) {
     const restImages = galleryImages.slice(2);
 
     return `
-            <div class="about-content" style="gap: 0; padding-top: 40px;">
-                <h2>Local Commitment</h2>
-            </div>
             <div class="community-layout">
                 <div class="community-photo">
                     <img src="${previewSrc}${previewHash ? `?v=${previewHash}` : ''}" data-img-name="${photo}" data-full-src="${fullSrc}${fullHash ? `?v=${fullHash}` : ''}" alt="Maria Rytikova's Local Guide contributions on Google Maps">
+                </div>
+                <div class="community-heading">
+                    <h2>Local Commitment</h2>
                 </div>
                 <div class="community-lead">
                     <p>Alongside our commissioned work, we independently photograph public spaces, local destinations and neighbourhood places that we notice and enjoy in&nbsp;everyday life. We share the&nbsp;photographs on&nbsp;Google Maps to&nbsp;give people a&nbsp;clear, current sense of&nbsp;each place before they visit and to&nbsp;make the&nbsp;local area easier to&nbsp;explore.</p>
