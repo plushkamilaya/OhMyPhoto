@@ -334,9 +334,9 @@ function generateCommunityHTML(page) {
                 </div>
                 <div class="community-text-1">
                     <p>Locations are selected independently by <a href="https://lovkoja.se" target="_blank" rel="noopener noreferrer" class="link-lovkoja">Lövkoja<img src="/lovkoja-mark.svg" alt="" class="link-lovkoja-icon"></a> as part of our ongoing commitment to the&nbsp;places where we live and work.</p>
+                    <p class="community-stat-line">500,000+ people have already stopped to look at these photos on Google Maps.</p>
                 </div>
                 <div class="community-text-2">
-                    <p class="community-stat-line">500,000+ people have already stopped to look at these photos on Google Maps.</p>
                     <a href="https://www.google.com/maps/contrib/110279442478436443087/photos" target="_blank" rel="noopener noreferrer" class="cta-link">I want to see this too</a>
                 </div>${insetImages.length > 0 ? `
                 <div class="community-gallery-inset">
