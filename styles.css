@@ -275,7 +275,7 @@ body {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-areas:
-        "photo text2 text1"
+        "photo text1 text2"
         "photo inset  inset";
     gap: 30px 40px;
     align-items: start;
