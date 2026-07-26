@@ -330,8 +330,8 @@ function generateCommunityHTML(page) {
                     <img src="${previewSrc}${previewHash ? `?v=${previewHash}` : ''}" data-img-name="${photo}" data-full-src="${fullSrc}${fullHash ? `?v=${fullHash}` : ''}" alt="Maria Rytikova's Local Guide contributions on Google Maps">
                 </div>
                 <div class="community-text-1">
-                    <p>Alongside our commissioned work, we independently photograph public spaces, local destinations and neighbourhood places that we notice and enjoy in everyday life. We share the photographs on Google Maps to give people a clear, current sense of each place before they visit and to make the local area easier to explore.</p>
-                    <p>Locations are selected independently by <a href="https://lovkoja.se" target="_blank" rel="noopener noreferrer" class="link-lovkoja">Lövkoja<img src="/lovkoja-mark.svg" alt="" class="link-lovkoja-icon"></a> as part of our ongoing commitment to the places where we live and work.</p>
+                    <p>Alongside our commissioned work, we independently photograph public spaces, local destinations and neighbourhood places that we notice and enjoy in everyday life. We share the&nbsp;photographs on Google Maps to give people a&nbsp;clear, current sense of each place before they visit and to make the&nbsp;local area easier to explore.</p>
+                    <p>Locations are selected independently by <a href="https://lovkoja.se" target="_blank" rel="noopener noreferrer" class="link-lovkoja">Lövkoja<img src="/lovkoja-mark.svg" alt="" class="link-lovkoja-icon"></a> as part of our ongoing commitment to the&nbsp;places where we live and work.</p>
                 </div>
                 <div class="community-text-2">
                     <p class="community-stat-line">500,000+ people have already stopped to look at these photos on Google Maps.</p>

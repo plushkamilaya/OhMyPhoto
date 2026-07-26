@@ -30,8 +30,8 @@ const pages = [
             heading: 'For Business',
             description: [
                 'We create images that make food desirable, spaces memorable and businesses feel more established.',
-                'The best part of Plushka is that it is part of <a href="https://lovkoja.se" target="_blank" rel="noopener noreferrer" class="link-lovkoja">Lövkoja<img src="/lovkoja-mark.svg" alt="" class="link-lovkoja-icon"></a>. Your photography can grow into a complete visual system across menus, brochures, advertising, websites, customer-facing menu areas and wider IT systems — all built around one clear understanding of your brand.',
-                'With an optional support subscription, we keep that system current: your website stays reliable, your images display beautifully, and new dishes, campaigns, menu items and small updates flow naturally into the work already in place. As your business grows, <a href="https://lovkoja.se" target="_blank" rel="noopener noreferrer" class="link-lovkoja">Lövkoja<img src="/lovkoja-mark.svg" alt="" class="link-lovkoja-icon"></a> can extend the same system into integrations, digital infrastructure and high-load platforms.'
+                'The&nbsp;best part of Plushka is that it is part of <a href="https://lovkoja.se" target="_blank" rel="noopener noreferrer" class="link-lovkoja">Lövkoja<img src="/lovkoja-mark.svg" alt="" class="link-lovkoja-icon"></a>. Your photography can grow into a&nbsp;complete visual system across menus, brochures, advertising, websites, customer-facing menu areas and wider IT systems — all built around one clear understanding of your brand.',
+                'With an&nbsp;optional support subscription, we keep that system current: your website stays reliable, your images display beautifully, and new dishes, campaigns, menu items and small updates flow naturally into the&nbsp;work already in place. As your business grows, <a href="https://lovkoja.se" target="_blank" rel="noopener noreferrer" class="link-lovkoja">Lövkoja<img src="/lovkoja-mark.svg" alt="" class="link-lovkoja-icon"></a> can extend the&nbsp;same system into integrations, digital infrastructure and high-load platforms.'
             ]
         },
         images: [
@@ -55,7 +55,7 @@ const pages = [
         template: 'sessions-split',
         intro: {
             heading: 'Private Sessions',
-            description: 'I offer a limited number of private photography sessions each season — for children, families and pets — capturing genuine moments in a relaxed, unhurried setting.'
+            description: 'I offer a&nbsp;limited number of private photography sessions each season — for children, families and pets — capturing genuine moments in a&nbsp;relaxed, unhurried setting.'
         },
         images: [
             'IMG_2433.JPG',
@@ -71,12 +71,12 @@ const pages = [
             {
                 id: 'mini-sessions',
                 heading: 'Mini Sessions',
-                description: 'Quick, focused sessions built around one clear idea — perfect for a fresh portrait, a seasonal update, or a small milestone.'
+                description: 'Quick, focused sessions built around one clear idea — perfect for a&nbsp;fresh portrait, a&nbsp;seasonal update, or a&nbsp;small milestone.'
             },
             {
                 id: 'story-sessions',
                 heading: 'Story Sessions',
-                description: 'Longer, narrative-style sessions that follow a day, an event, or a milestone from start to finish — the full story, not just a single frame.'
+                description: 'Longer, narrative-style sessions that follow a&nbsp;day, an&nbsp;event, or a&nbsp;milestone from start to finish — the&nbsp;full story, not just a&nbsp;single frame.'
             }
         ]
     },

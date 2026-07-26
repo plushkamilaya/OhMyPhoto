@@ -188,8 +188,12 @@ body {
 .intro-description {
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 24px;
+}
+
+.intro-description p:first-child {
+    grid-column: 1 / -1;
 }
 
 .intro-description p {
@@ -757,6 +761,10 @@ body {
 
     .session-btn-desc {
         font-size: 13px;
+    }
+
+    .intro-description {
+        grid-template-columns: 1fr;
     }
 }
 
