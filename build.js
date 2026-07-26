@@ -405,11 +405,14 @@ function generateSessionsSplitHTML(page) {
     const intro = page.intro || {};
     const options = page.sessionOptions || [];
 
-    const buttons = options.map(option => `
-                    <button type="button" class="session-btn">
+    const buttons = options.map(option => {
+        const modifier = option.id ? ` session-btn--${option.id.replace(/-sessions$/, '')}` : '';
+        return `
+                    <button type="button" class="session-btn${modifier}">
                         <span class="session-btn-title">${option.heading}</span>
                         <span class="session-btn-desc">${option.description}</span>
-                    </button>`).join('');
+                    </button>`;
+    }).join('');
 
     return `
             <div class="about-content" style="gap: 0; padding-top: 40px;">
