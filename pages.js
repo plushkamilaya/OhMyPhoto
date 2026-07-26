@@ -58,13 +58,13 @@ const pages = [
             description: 'I offer a&nbsp;limited number of private photography sessions each season — for children, families and pets — capturing genuine moments in a&nbsp;relaxed, unhurried setting.'
         },
         images: [
-            'IMG_2433.JPG',
+            'IMG_4172-1.jpg',
             'IMG_2724.JPG',
             'IMG_3408.jpg',
             'IMG_6213.JPG',
             'IMG_3937-1.jpg',
             'IMG_4152_1.jpg',
-            'IMG_4172-1.jpg',
+            'IMG_2433.JPG',
             'IMG_6146.jpg'
         ],
         sessionOptions: [
