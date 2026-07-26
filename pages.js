@@ -64,8 +64,8 @@ const pages = [
             'IMG_6213.JPG',
             'IMG_4152_1.jpg',
             'IMG_3937-1.jpg',
-            'IMG_6146.jpg',
-            { src: 'IMG_2433.JPG', focus: '40% center' }
+            { src: 'IMG_2433.JPG', focus: '40% center' },
+            'IMG_6146.jpg'
         ],
         sessionOptions: [
             {
