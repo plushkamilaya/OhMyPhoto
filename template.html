@@ -4,32 +4,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mary Rytikova</title>
+    <title>Maria Rytikova</title>
     
     <!-- Meta Description -->
-    <meta name="description" content="Mary Rytikova - Professional photographer from Täby, Sweden. Specializing in authentic portraits, events, and commercial photography. Capturing moments that tell stories and evoke emotions.">
+    <meta name="description" content="Maria Rytikova - Professional photographer from Täby, Sweden. Specializing in authentic portraits, events, and commercial photography. Capturing moments that tell stories and evoke emotions.">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://plushka.se/">
-    <meta property="og:title" content="Mary Rytikova - Professional Photography">
-    <meta property="og:description" content="Mary Rytikova - Professional photographer from Täby, Sweden. Specializing in authentic portraits, events, and commercial photography. Capturing moments that tell stories and evoke emotions.">
+    <meta property="og:title" content="Maria Rytikova - Professional Photography">
+    <meta property="og:description" content="Maria Rytikova - Professional photographer from Täby, Sweden. Specializing in authentic portraits, events, and commercial photography. Capturing moments that tell stories and evoke emotions.">
     <meta property="og:image" content="https://plushka.se/photos/mary-rytikova-photo.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:site_name" content="Mary Rytikova Photography">
+    <meta property="og:site_name" content="Maria Rytikova Photography">
     <meta property="og:locale" content="en_US">
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://plushka.se/">
-    <meta property="twitter:title" content="Mary Rytikova - Professional Photography">
-    <meta property="twitter:description" content="Mary Rytikova - Professional photographer from Täby, Sweden. Specializing in authentic portraits, events, and commercial photography. Capturing moments that tell stories and evoke emotions.">
+    <meta property="twitter:title" content="Maria Rytikova - Professional Photography">
+    <meta property="twitter:description" content="Maria Rytikova - Professional photographer from Täby, Sweden. Specializing in authentic portraits, events, and commercial photography. Capturing moments that tell stories and evoke emotions.">
     <meta property="twitter:image" content="https://plushka.se/photos/mary-rytikova-photo.jpg">
     
     <!-- Additional Meta Tags -->
-    <meta name="author" content="Mary Rytikova">
-    <meta name="keywords" content="photography, portrait photography, event photography, commercial photography, Täby, Sweden, Mary Rytikova, professional photographer">
+    <meta name="author" content="Maria Rytikova">
+    <meta name="keywords" content="photography, portrait photography, event photography, commercial photography, Täby, Sweden, Maria Rytikova, professional photographer">
     <meta name="robots" content="index, follow">
     
     <!-- Favicon -->
@@ -51,8 +51,7 @@
 <body>
     <header class="header">
         <div class="header-container">
-            <a href="/#index" class="logo" data-page="index">Mary Rytikova</a>
-            <h2 class="header-page-title">PAGE_TITLE</h2>
+            <a href="/#index" class="logo" data-page="index">Maria Rytikova</a>
             <nav>
                 <ul class="nav-menu">
                     NAVIGATION_PLACEHOLDER
@@ -80,18 +79,64 @@
 
             <div class="contact-info">
                 <p>Contact: <a href="mailto:hello@plushka.se">hello@plushka.se</a></p>
-                <p>Part of <a href="https://lovkoja.se" target="_blank" rel="noopener noreferrer">Lövkoja</a></p>
+                <p>Part of <a href="https://lovkoja.se" target="_blank" rel="noopener noreferrer" class="link-lovkoja">Lövkoja<img src="/lovkoja-mark.svg" alt="" class="link-lovkoja-icon"></a></p>
             </div>
         </div>
     </footer>
 
     <div id="lightbox" class="lightbox">
-        <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
-        <div class="lightbox-content">
-            <img id="lightbox-img" src="" alt="Lightbox Image">
+        <div class="lightbox-body">
+            <div class="lightbox-content">
+                <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+                <img id="lightbox-img" src="" alt="Lightbox Image">
+                <div class="lightbox-nav lightbox-prev" onclick="previousImage(event)">&#10094;</div>
+                <div class="lightbox-nav lightbox-next" onclick="nextImage(event)">&#10095;</div>
+            </div>
+            <div class="lightbox-panel" id="lightbox-panel">
+                <h3 id="lightbox-title" class="lightbox-title" hidden></h3>
+                <p id="lightbox-caption" class="lightbox-caption" hidden></p>
+                <div class="lightbox-gear" id="lightbox-gear" hidden>
+                    <span class="lightbox-gear-label">Shot with</span>
+                    <div id="lightbox-gear-camera" class="lightbox-gear-row"></div>
+                    <div id="lightbox-gear-lens" class="lightbox-gear-row" hidden></div>
+                </div>
+                <button type="button" id="lightbox-enquiry-btn" class="session-btn lightbox-enquiry-btn" hidden></button>
+                <form id="lightbox-enquiry-form" class="lightbox-enquiry-form" hidden>
+                    <input type="text" name="name" class="enquiry-field" placeholder="Name" required>
+                    <input type="email" name="email" class="enquiry-field" placeholder="Email" required>
+                    <input type="tel" name="phone" class="enquiry-field" placeholder="Phone (optional)">
+                    <textarea name="message" class="enquiry-field" placeholder="Message" rows="3"></textarea>
+                    <input type="hidden" name="photoId">
+                    <input type="hidden" name="page">
+                    <input type="hidden" name="enquiryAction">
+                    <input type="hidden" name="camera">
+                    <input type="hidden" name="lens">
+                    <button type="submit" class="session-btn">Send enquiry</button>
+                </form>
+            </div>
         </div>
-        <div class="lightbox-nav lightbox-prev" onclick="previousImage(event)">&#10094;</div>
-        <div class="lightbox-nav lightbox-next" onclick="nextImage(event)">&#10095;</div>
+    </div>
+
+    <div id="mailto-fallback" class="mailto-fallback" hidden>
+        <div class="mailto-fallback-backdrop"></div>
+        <div class="mailto-fallback-panel" role="dialog" aria-modal="true" aria-labelledby="mailto-fallback-title">
+            <button type="button" class="mailto-fallback-close" aria-label="Close">&times;</button>
+            <h3 id="mailto-fallback-title">No email app found</h3>
+            <p>It looks like this device doesn't have an email app set up. Please write to us directly:</p>
+            <div class="mailto-fallback-field">
+                <label>To</label>
+                <div class="mailto-fallback-value" id="mailto-fallback-address"></div>
+            </div>
+            <div class="mailto-fallback-field">
+                <label>Subject</label>
+                <div class="mailto-fallback-value" id="mailto-fallback-subject"></div>
+            </div>
+            <div class="mailto-fallback-field">
+                <label>Message</label>
+                <textarea class="mailto-fallback-value mailto-fallback-body" id="mailto-fallback-body" readonly rows="6"></textarea>
+            </div>
+            <button type="button" class="session-btn" id="mailto-fallback-copy">Copy details</button>
+        </div>
     </div>
 
     <script src="/script.js?v=JS_HASH"></script>

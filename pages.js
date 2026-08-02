@@ -23,9 +23,17 @@ const pages = [
         ]
     },
     {
-        name: 'Restaurants',
-        title: 'Restaurants',
-        template: 'gallery',
+        name: 'for-business',
+        title: 'For Business',
+        template: 'gallery-intro',
+        intro: {
+            heading: 'For Business',
+            description: [
+                'We create images that make food desirable, spaces memorable and businesses feel more established.',
+                'The&nbsp;best part of Plushka is that it is part of <a href="https://lovkoja.se" target="_blank" rel="noopener noreferrer" class="link-lovkoja">Lövkoja<img src="/lovkoja-mark.svg" alt="" class="link-lovkoja-icon"></a>. Your photography can grow into a&nbsp;complete visual system across menus, brochures, advertising, websites, customer-facing menu areas and wider IT systems — all built around one clear understanding of your brand.',
+                'With an&nbsp;optional support subscription, we keep that system current: your website stays reliable, your images display beautifully, and new dishes, campaigns, menu items and small updates flow naturally into the&nbsp;work already in place. As your business grows, <a href="https://lovkoja.se" target="_blank" rel="noopener noreferrer" class="link-lovkoja">Lövkoja<img src="/lovkoja-mark.svg" alt="" class="link-lovkoja-icon"></a> can extend the&nbsp;same system into integrations, digital infrastructure and high-load platforms.'
+            ]
+        },
         images: [
             'ES7A6101.JPG',
             'ES7A6118.JPG',
@@ -42,29 +50,46 @@ const pages = [
         ]
     },
     {
-        name: 'Kids',
-        title: 'Kids',
-        template: 'gallery',
+        name: 'private-sessions',
+        title: 'Private Sessions',
+        template: 'sessions-split',
+        intro: {
+            heading: 'Private Sessions',
+            description: 'I offer a&nbsp;limited number of private photography sessions each season — for children, families and pets — capturing genuine moments in a&nbsp;relaxed, unhurried setting.'
+        },
         images: [
-            'IMG_2433.JPG',
+            'IMG_4172-1.jpg',
             'IMG_2724.JPG',
             'IMG_3408.jpg',
             'IMG_6213.JPG',
-            'IMG_3937-1.jpg',
             'IMG_4152_1.jpg',
-            'IMG_4172-1.jpg',
+            'IMG_3937-1.jpg',
+            { src: 'IMG_2433.JPG', focus: '40% center' },
             'IMG_6146.jpg'
+        ],
+        sessionOptions: [
+            {
+                id: 'mini-sessions',
+                heading: 'Mini Sessions',
+                duration: '15 min',
+                price: '500 SEK',
+                description: 'A&nbsp;few beautiful portraits — of&nbsp;you, your pet, your child, or all together. Quick to&nbsp;do, and easy to&nbsp;fit in&nbsp;while you\'re out for a&nbsp;walk.'
+            },
+            {
+                id: 'story-sessions',
+                heading: 'Story Sessions',
+                duration: '1.5–2 hours',
+                price: '2000 SEK',
+                description: 'A&nbsp;longer session, giving everyone time to&nbsp;relax and get used to&nbsp;the camera, with room for a&nbsp;wider variety of&nbsp;shots. We can choose the&nbsp;location together, or&nbsp;I can come to&nbsp;you at&nbsp;home (in&nbsp;Täby and nearby) and help with outfit choices too. By the&nbsp;end we usually come away with not just lovely, polished portraits (maybe with a&nbsp;hint of&nbsp;suspicion from the&nbsp;little ones!) but wonderfully natural expressions too — often alongside charmingly dirty faces and clothes by&nbsp;then. It\'s so&nbsp;sweet.'
+            }
         ]
     },
     {
-        name: 'places',
-        title: 'Places',
-        template: 'gallery',
+        name: 'local-commitment',
+        title: 'Local Commitment',
+        template: 'community',
         images: [
-            'ES7A3178.JPG',
-            'ES7A3332-1.jpg',
-            'ES7A2999.jpg',
-            'ES7A3168-1.jpg'
+            'google-maps-profile.jpg'
         ]
     },
     {
@@ -97,11 +122,18 @@ const pages = [
                 description: 'Best for events, sports, portraits — and capturing kids without getting in their way. My biggest lens, but also the most discreet: sharp from a distance, fast in action.'
             },
             {
-                category: 'Lenses',
-                name: 'Canon RF 85mm F2 Macro IS STM & EF 50mm f/1.8 STM',
+                category: 'Lens',
+                name: 'Canon RF 85mm F2 Macro IS STM',
                 image: 'canon-rf-85.jpg',
                 url: 'https://www.canon-europe.com/lenses/rf-85mm-f2-macro-is-stm/',
-                description: 'My go-to lenses for people, food, and details. Lightweight, fast, and easy to carry all day — yet they deliver glossy, cinematic results.'
+                description: 'My go-to lens for people, food, and details. Lightweight, fast, and easy to carry all day — yet it delivers glossy, cinematic results.'
+            },
+            {
+                category: 'Lens',
+                name: 'Canon EF 50mm f/1.4 USM',
+                image: 'canon-ef-50-1.4.jpg',
+                url: 'https://www.canon-europe.com/lenses/ef-50mm-f-1-4-usm-lens/',
+                description: 'A compact, fast standard lens — sharp wide open at f/1.4 and always ready for portraits, reportage, and everyday moments.'
             },
             {
                 category: 'Second camera',
@@ -211,11 +243,15 @@ const pages = [
         ]
     },
     {
-        name: 'local-commitment',
-        title: 'Local Commitment',
-        template: 'community',
+        name: 'places',
+        title: 'Places',
+        hidden: true,
+        template: 'gallery',
         images: [
-            'google-maps-local-guide.jpg'
+            'ES7A3178.JPG',
+            'ES7A3332-1.jpg',
+            'ES7A2999.jpg',
+            'ES7A3168-1.jpg'
         ]
     }
 ];

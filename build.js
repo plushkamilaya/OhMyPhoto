@@ -1,15 +1,80 @@
 const fs = require('fs');
 const path = require('path');
 const sharp = require('sharp');
+const exifr = require('exifr');
 const { execSync } = require('child_process');
 const crypto = require('crypto');
 
 const PHOTOS_PATH = '/photos';
 
 const pages = require('./pages');
+const equipment = require('./equipment');
+
+// Default enquiry action per page (keyed by page.name), applied to every
+// photo on that page unless overridden on the individual image entry.
+// Pages not listed here (index, about, hidden places) show no enquiry button.
+const DEFAULT_ENQUIRY_ACTION = {
+    'private-sessions': 'book-similar-session',
+    'for-business': 'request-similar-shoot'
+};
+
+const DEFAULT_CAMERA_ID = 'canon-eos-r6';
+
+// English is the only site language live today; the sv entry is kept ready
+// for when a Swedish version of the site ships, so the mailto link only
+// needs a lang switch, not new copy.
+const CONTACT_MAILTO = {
+    en: {
+        address: 'hello@plushka.se',
+        subject: 'Enquiry from plushka.se',
+        body: 'Hi,\n\nI\'m reaching out after visiting plushka.se — '
+    },
+    sv: {
+        address: 'hello@plushka.se',
+        subject: 'Förfrågan från plushka.se',
+        body: 'Hej,\n\nJag hör av mig efter att ha besökt plushka.se — '
+    }
+};
+
+function buildMailtoHref(lang) {
+    const contact = CONTACT_MAILTO[lang] || CONTACT_MAILTO.en;
+    const subject = encodeURIComponent(contact.subject);
+    const body = encodeURIComponent(contact.body);
+    return `mailto:${contact.address}?subject=${subject}&body=${body}`;
+}
+
+// Same hello@plushka.se inbox as buildMailtoHref, but pre-filled for a
+// specific session card: subject names the session, body has a one-line
+// greeting followed by fields to fill in (date/location/name/comment).
+function buildSessionMailtoHref(lang, sessionHeading) {
+    const contact = CONTACT_MAILTO[lang] || CONTACT_MAILTO.en;
+    const sessionName = sessionHeading.replace(/Sessions$/, 'Session');
+    const subject = lang === 'sv' ? `Förfrågan om ${sessionName}` : `Request for ${sessionName}`;
+    const greeting = lang === 'sv'
+        ? 'Hej, jag vill boka en fotosession — här är mina uppgifter:'
+        : 'Hi, I\'d like to book a photo session — here are my details:';
+    const fields = lang === 'sv'
+        ? 'Datum: \nPlats: \nNamn: \nLite om hur jag ser sessionen framför mig (frivilligt): '
+        : 'Date: \nLocation: \nName: \nA little about how I imagine the session (optional): ';
+    const body = `${greeting}\n\n${fields}`;
+    return `mailto:${contact.address}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
 
 function imgSrc(image) {
     return typeof image === 'string' ? image : image.src;
+}
+
+function escapeAttr(value) {
+    return String(value).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+}
+
+function collectPageImageSrcs(page) {
+    const images = [
+        ...(page.images || []),
+        ...(page.galleryImages || []),
+        ...(page.sections || []).flatMap(section => section.images || [])
+    ];
+    return images.map(imgSrc);
 }
 
 const buildDir = './build';
@@ -21,6 +86,48 @@ if (!fs.existsSync(buildDir)) {
 
 if (!fs.existsSync(buildPhotosDir)) {
     fs.mkdirSync(buildPhotosDir);
+}
+
+// filename -> { cameraId, lensId } resolved once per unique photo during
+// processImages(), read synchronously afterwards by generateGalleryHTML().
+const equipmentCache = new Map();
+
+function findEquipmentIdByAlias(type, value) {
+    if (!value) {
+        return null;
+    }
+    const match = equipment.find(item => item.type === type && item.aliases.includes(value));
+    return match ? match.id : null;
+}
+
+// Reads only Make/Model/LensModel from the original file — never GPS,
+// serial numbers, owner info, or capture timestamps. Camera always
+// resolves to something (defaulting to DEFAULT_CAMERA_ID); a lens that
+// isn't recognised in the equipment catalogue is omitted, never guessed.
+async function resolveEquipmentForFilenames(filenames) {
+    for (const filename of filenames) {
+        if (equipmentCache.has(filename)) {
+            continue;
+        }
+
+        let cameraId = DEFAULT_CAMERA_ID;
+        let lensId = null;
+        const inputPath = '.' + PHOTOS_PATH + '/' + filename;
+
+        try {
+            if (fs.existsSync(inputPath)) {
+                const exif = await exifr.parse(inputPath, ['Make', 'Model', 'LensModel']);
+                if (exif) {
+                    cameraId = findEquipmentIdByAlias('camera', exif.Model) || DEFAULT_CAMERA_ID;
+                    lensId = findEquipmentIdByAlias('lens', exif.LensModel);
+                }
+            }
+        } catch (error) {
+            // No readable EXIF - fall back to the default camera, no lens.
+        }
+
+        equipmentCache.set(filename, { cameraId, lensId });
+    }
 }
 
 async function optimizeImage(inputPath, outputPath, maxSize = 1000) {
@@ -44,12 +151,10 @@ async function processImages() {
     const allImages = new Set();
     
     pages.forEach(page => {
-        if (page.images && page.images.length > 0) {
-            page.images.forEach(img => {
-                allImages.add(imgSrc(img));
-            });
-        }
+        collectPageImageSrcs(page).forEach(src => allImages.add(src));
     });
+
+    await resolveEquipmentForFilenames(allImages);
 
     let hasErrors = false;
     const errors = [];
@@ -99,6 +204,8 @@ function generateGalleryHTML(images, page) {
         return '';
     }
 
+    const defaultEnquiryAction = DEFAULT_ENQUIRY_ACTION[page.name] || null;
+
     return images.map(image => {
         const src = imgSrc(image);
         const filename = path.basename(src);
@@ -113,9 +220,28 @@ function generateGalleryHTML(images, page) {
         const wideSpan = typeof image.wide === 'number' ? image.wide : (image.wide ? 2 : 0);
         const wideClass = wideSpan > 1 ? ` gallery-item--wide-${wideSpan}` : '';
 
+        const override = (typeof image === 'object' && image.equipmentOverride) || {};
+        const cached = equipmentCache.get(filename) || { cameraId: DEFAULT_CAMERA_ID, lensId: null };
+        const cameraId = override.camera || cached.cameraId;
+        const lensId = override.lens || cached.lensId;
+
+        const title = typeof image === 'object' ? image.title : undefined;
+        const caption = typeof image === 'object' ? image.caption : undefined;
+        const enquiryAction = (typeof image === 'object' && image.enquiryAction) || defaultEnquiryAction;
+        const focus = typeof image === 'object' ? image.focus : undefined;
+
+        const extraAttrs = [
+            ` data-camera="${cameraId}"`,
+            lensId ? ` data-lens="${lensId}"` : '',
+            title ? ` data-title="${escapeAttr(title)}"` : '',
+            caption ? ` data-caption="${escapeAttr(caption)}"` : '',
+            enquiryAction ? ` data-enquiry="${enquiryAction}"` : '',
+            focus ? ` style="object-position: ${escapeAttr(focus)};"` : ''
+        ].join('');
+
         return `
                 <div class="gallery-item${wideClass}">
-                    <img src="${previewSrc}${previewHash ? `?v=${previewHash}` : ''}" data-img-name="${src}" data-full-src="${fullSrc}${fullHash ? `?v=${fullHash}` : ''}" alt="${page.title ? page.title + ' photography' : 'Photography'}">
+                    <img src="${previewSrc}${previewHash ? `?v=${previewHash}` : ''}" data-img-name="${src}" data-full-src="${fullSrc}${fullHash ? `?v=${fullHash}` : ''}"${extraAttrs} alt="${page.title ? page.title + ' photography' : 'Photography'}">
                 </div>`;
     }).join('');
 }
@@ -136,6 +262,12 @@ async function processGearImages() {
                     allGearImages.add(item.image);
                 }
             });
+        }
+    });
+
+    equipment.forEach(item => {
+        if (item.image) {
+            allGearImages.add(item.image);
         }
     });
 
@@ -205,7 +337,7 @@ function generateAboutHTML(page) {
                     <p>Before a shoot, I often create mood boards with ideas — not to follow them strictly, but to get into the right mood and let ideas flow. It’s my way of making sure every session has its own special moments, even though those unexpected “magic shots” almost always appear on their own.</p>
                     <p>Whether it’s portraits, events or commercial projects, I always look for authenticity and emotions. For me, a good photograph is one that you can feel, not just see.</p>
                     <p>📷 My photography also documents the neighbourhood — see our <a href="/#local-commitment" data-page="local-commitment">local commitment</a> on Google Maps.</p>
-                    <p>Photography portfolio by Mariia Rytikova. Part of <a href="https://lovkoja.se" target="_blank" rel="noopener noreferrer">Lövkoja</a>.</p>
+                    <p>Photography portfolio by Maria Rytikova. Part of <a href="https://lovkoja.se" target="_blank" rel="noopener noreferrer" class="link-lovkoja">Lövkoja<img src="/lovkoja-mark.svg" alt="" class="link-lovkoja-icon"></a>.</p>
                 </div>
             </div>
             <div class="about-content" style="gap: 0; padding-top: 30px;">
@@ -227,39 +359,96 @@ function generateCommunityHTML(page) {
     const fullHash = fs.existsSync(path.join(buildDir, fullSrc)) ?
         getFileHash(path.join(buildDir, fullSrc)) : '';
 
+    const galleryImages = page.galleryImages || [];
+    const insetImages = galleryImages.slice(0, 2);
+    const restImages = galleryImages.slice(2);
+
+    return `
+            <div class="community-layout">
+                <div class="community-photo">
+                    <img src="${previewSrc}${previewHash ? `?v=${previewHash}` : ''}" data-img-name="${photo}" data-full-src="${fullSrc}${fullHash ? `?v=${fullHash}` : ''}" alt="Maria Rytikova's Local Guide contributions on Google Maps">
+                </div>
+                <div class="community-heading">
+                    <h2>Local Commitment</h2>
+                </div>
+                <div class="community-text-1">
+                    <p>Alongside our commissioned work, we independently photograph public spaces, local destinations and neighbourhood places that we notice and enjoy in&nbsp;everyday life. We share the&nbsp;photographs on&nbsp;Google Maps to&nbsp;give people a&nbsp;clear, current sense of&nbsp;each place before they visit and to&nbsp;make the&nbsp;local area easier to&nbsp;explore.</p>
+                    <p class="community-stat-line">500,000+ people have already stopped to&nbsp;look at&nbsp;these photos on&nbsp;Google Maps.</p>
+                    <a href="https://www.google.com/maps/contrib/110279442478436443087/photos" target="_blank" rel="noopener noreferrer" class="cta-link">I want to&nbsp;see this too</a>
+                </div>
+                <div class="community-text-2">
+                    <p>Locations are selected independently by&nbsp;<a href="https://lovkoja.se" target="_blank" rel="noopener noreferrer" class="link-lovkoja">Lövkoja<img src="/lovkoja-mark.svg" alt="" class="link-lovkoja-icon"></a> as&nbsp;part of&nbsp;our ongoing commitment to&nbsp;the&nbsp;places where we live and work.</p>
+                </div>${insetImages.length > 0 ? `
+                <div class="community-gallery-inset">
+                    ${generateGalleryHTML(insetImages, page)}
+                </div>` : ''}
+            </div>${restImages.length > 0 ? `
+            <div class="gallery-grid">
+                ${generateGalleryHTML(restImages, page)}
+            </div>` : ''}`;
+}
+
+function generateIntroDescriptionHTML(description, extraByIndex = {}) {
+    const paragraphs = Array.isArray(description) ? description : [description || ''];
+    return paragraphs.map((paragraph, index) => {
+        const extra = extraByIndex[index] || '';
+        return `<div class="intro-description-item"><p>${paragraph}</p>${extra}</div>`;
+    }).join('\n                    ');
+}
+
+function generateGalleryIntroHTML(page) {
+    const intro = page.intro || {};
+    const extraByIndex = {};
+
+    if (page.name === 'for-business') {
+        extraByIndex[0] = `<a href="${buildMailtoHref('en')}" class="cta-link">Write to us</a>`;
+    }
+
     return `
             <div class="about-content" style="gap: 0; padding-top: 40px;">
-                <h2>Local Commitment</h2>
-            </div>
-            <div class="about-content">
-                <div class="about-text">
-                    <p>Lövkoja Studio provides professional photography and visual content for businesses, organisations and local projects.</p>
-                    <p>Alongside our commissioned work, we independently document a selected number of public spaces, local destinations and neighbourhood places that deserve better visual representation.</p>
-                    <p>The photographs are published on Google Maps, helping people understand, discover and navigate the area while contributing to a more accurate and attractive digital image of the local community.</p>
-                    <p>Locations are selected independently by Lövkoja as part of our ongoing commitment to the places where we live and work.</p>
-                    <a href="https://www.google.com/maps/contrib/110279442478436443087/photos" target="_blank" rel="noopener noreferrer" class="cta-link">View contributions on Google Maps</a>
-                </div>
-                <div class="community-photo">
-                    <img src="${previewSrc}${previewHash ? `?v=${previewHash}` : ''}" data-img-name="${photo}" data-full-src="${fullSrc}${fullHash ? `?v=${fullHash}` : ''}" alt="Mariia Rytikova's Local Guide contributions on Google Maps">
-                </div>
-            </div>
-            <div class="about-content" style="gap: 0; padding-top: 30px;">
-                <h2>Local visual impact</h2>
+                <h2>${intro.heading || page.title}</h2>
             </div>
             <div class="about-content" style="gap: 0;">
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <span class="stat-number">500,000+</span>
-                        <span class="stat-label">photo views on Google Maps</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">Local places</span>
-                        <span class="stat-label">documented and shared</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">Täby</span>
-                        <span class="stat-label">and the Stockholm area</span>
-                    </div>
+                <div class="intro-description">
+                    ${generateIntroDescriptionHTML(intro.description, extraByIndex)}
+                </div>
+            </div>
+            <div class="gallery-grid">
+                ${generateGalleryHTML(page.images, page)}
+            </div>`;
+}
+
+function generateSessionsSplitHTML(page) {
+    const intro = page.intro || {};
+    const options = page.sessionOptions || [];
+
+    const buttons = options.map(option => {
+        const modifier = option.id ? ` session-btn--${option.id.replace(/-sessions$/, '')}` : '';
+        const meta = (option.duration || option.price) ? `
+                        <span class="session-btn-meta">
+                            <span class="session-btn-duration">${option.duration || ''}</span>
+                            <span class="session-btn-price">${option.price || ''}</span>
+                        </span>` : '';
+        const href = buildSessionMailtoHref('en', option.heading);
+        return `
+                    <a href="${href}" class="session-btn${modifier}">
+                        <span class="session-btn-title">${option.heading}</span>${meta}
+                        <span class="session-btn-desc">${option.description}</span>
+                    </a>`;
+    }).join('');
+
+    return `
+            <div class="about-content" style="gap: 0; padding-top: 40px;">
+                <h2>${intro.heading || page.title}</h2>
+            </div>
+            <div class="session-split">
+                <div class="session-gallery gallery-grid">
+                    ${generateGalleryHTML(page.images, page)}
+                </div>
+                <div class="session-actions">
+                    <div class="session-intro">
+                        ${generateIntroDescriptionHTML(intro.description)}
+                    </div>${buttons}
                 </div>
             </div>`;
 }
@@ -298,6 +487,10 @@ function generateContent(page) {
     switch (page.template) {
         case 'gallery':
             return `<div class="gallery-grid">\n                ${generateGalleryHTML(page.images, page)}\n            </div>`;
+        case 'gallery-intro':
+            return generateGalleryIntroHTML(page);
+        case 'sessions-split':
+            return generateSessionsSplitHTML(page);
         case 'about':
             return generateAboutHTML(page);
         case 'community':
@@ -356,8 +549,7 @@ function generateAllSiteImagesJson() {
     const allImages = new Map();
 
     pages.forEach(page => {
-        page.images.forEach(image => {
-            const src = imgSrc(image);
+        collectPageImageSrcs(page).forEach(src => {
             if (!allImages.has(src)) {
                 const originalExtension = path.extname(src);
                 const previewPath = `${PHOTOS_PATH}/preview_${path.basename(src, originalExtension)}${originalExtension}`;
@@ -380,6 +572,24 @@ function generateAllSiteImagesJson() {
 
     const imagesArray = Array.from(allImages.values());
     return JSON.stringify(imagesArray, null, 8);
+}
+
+function generateEquipmentCatalogJson() {
+    const catalog = equipment.map(item => {
+        const outputName = gearOutputName(item.image);
+        const outputPath = path.join(buildPhotosDir, outputName);
+        const hash = fs.existsSync(outputPath) ? getFileHash(outputPath) : '';
+
+        return {
+            id: item.id,
+            type: item.type,
+            name: item.name,
+            description: item.description,
+            image: `${PHOTOS_PATH}/${outputName}${hash ? `?v=${hash}` : ''}`
+        };
+    });
+
+    return JSON.stringify(catalog, null, 8);
 }
 
 function minifyCSS(inputPath, outputPath) {
@@ -431,12 +641,9 @@ function checkUnusedPhotos() {
     
     const usedPhotos = new Set();
     pages.forEach(page => {
-        if (page.images && page.images.length > 0) {
-            page.images.forEach(img => {
-                const filename = path.basename(imgSrc(img));
-                usedPhotos.add(filename);
-            });
-        }
+        collectPageImageSrcs(page).forEach(src => {
+            usedPhotos.add(path.basename(src));
+        });
     });
     
     const missingPhotos = [];
@@ -536,7 +743,8 @@ async function build() {
     
     let script = fs.readFileSync('./script.js', 'utf8');
     script = script.replace(/ALL_SITE_IMAGES/, allSiteImagesJson);
-    
+    script = script.replace(/EQUIPMENT_CATALOG_PLACEHOLDER/, generateEquipmentCatalogJson());
+
     const pagesWithContent = pages.map(page => ({
         name: page.name,
         title: page.title,
@@ -575,7 +783,8 @@ async function build() {
         'favicon-32x32.png',
         'favicon-48x48.png',
         'apple-touch-icon.png',
-        'manifest.json'
+        'manifest.json',
+        'lovkoja-mark.svg'
     ];
     
     faviconFiles.forEach(file => {
@@ -583,6 +792,12 @@ async function build() {
             fs.copyFileSync(file, path.join(buildDir, file));
         }
     });
+
+    // Hover artwork and other non-photo UI assets are served unchanged.
+    const assetsDir = './assets';
+    if (fs.existsSync(assetsDir)) {
+        fs.cpSync(assetsDir, path.join(buildDir, 'assets'), { recursive: true });
+    }
 
     console.log('Build completed!');
 }

@@ -1,4 +1,4 @@
-# Mary Rytikova Photography Portfolio
+# Maria Rytikova Photography Portfolio
 
 A modern, responsive photography portfolio website built as a Single Page Application (SPA) with instant navigation, optimized images, and a beautiful lightbox gallery.
 

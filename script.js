@@ -2,6 +2,12 @@ let currentImageIndex = 0;
 let images = [];
 let currentPage = 'index';
 
+const REDIRECTS = { Restaurants: 'for-business', Kids: 'private-sessions' };
+
+function resolveHash(hash) {
+    return REDIRECTS[hash] || hash;
+}
+
 const allSiteImages = ALL_SITE_IMAGES;
 
 const PAGES_DATA = PAGES_DATA_PLACEHOLDER;
@@ -14,21 +20,67 @@ PAGES_DATA.forEach(page => {
     };
 });
 
+const EQUIPMENT_CATALOG = EQUIPMENT_CATALOG_PLACEHOLDER;
+
+const EQUIPMENT_BY_ID = {};
+EQUIPMENT_CATALOG.forEach(item => {
+    EQUIPMENT_BY_ID[item.id] = item;
+});
+
+const ENQUIRY_LABELS = {
+    'book-similar-session': 'Book a similar session',
+    'request-similar-shoot': 'Request a similar shoot',
+    'ask-print': 'Ask about a print',
+    'license-image': 'License this image'
+};
+
+const ENQUIRY_BUTTON_VARIANTS = {
+    'book-similar-session': [
+        'Book a similar session',
+        'I want this too',
+        'Get us a session like this',
+        'Make this happen for us'
+    ],
+    'request-similar-shoot': [
+        'Request a similar shoot',
+        'We want this too',
+        'Get us something like this',
+        'Set us up with the same'
+    ],
+    'ask-print': [
+        'Ask about a print',
+        'I want this on my wall',
+        'Get me a print like this'
+    ],
+    'license-image': [
+        'License this image',
+        "I'd like to use this photo",
+        'Clear this image for use'
+    ]
+};
+
+function pickEnquiryButtonLabel(action) {
+    const variants = ENQUIRY_BUTTON_VARIANTS[action];
+    if (!variants || variants.length === 0) {
+        return ENQUIRY_LABELS[action] || '';
+    }
+    return variants[Math.floor(Math.random() * variants.length)];
+}
+
 function navigateToPage(pageName) {
     if (!pages[pageName]) return;
-    
+
     currentPage = pageName;
     const page = pages[pageName];
-    
-    document.querySelector('.header-page-title').textContent = page.title || '';
+
     document.getElementById('page-content').innerHTML = page.content;
-    
+
     updateNavigation();
     updateImages();
     setupEventListeners();
-    
+
     window.scrollTo(0, 0);
-    
+
     window.history.pushState({page: pageName}, '', `#${pageName}`);
 }
 
@@ -50,7 +102,12 @@ function updateImages() {
     images = Array.from(document.querySelectorAll(".gallery-item img, .community-photo img")).map(img => ({
         src: img.src,
         fullSrc: img.dataset.fullSrc,
-        name: img.dataset.imgName
+        name: img.dataset.imgName,
+        cameraId: img.dataset.camera || null,
+        lensId: img.dataset.lens || null,
+        title: img.dataset.title || null,
+        caption: img.dataset.caption || null,
+        enquiryAction: img.dataset.enquiry || null
     }));
 }
 
@@ -60,6 +117,8 @@ function setupEventListeners() {
             openLightbox(this.dataset.imgName);
         });
     });
+
+    bindMailtoLinks(document.getElementById('page-content'));
 }
 
 let touchStartX = 0;
@@ -132,6 +191,57 @@ function setupLightboxDoubleTap() {
 
 
 
+function renderGearRow(rowEl, equipmentId) {
+    if (!equipmentId || !EQUIPMENT_BY_ID[equipmentId]) {
+        rowEl.hidden = true;
+        rowEl.innerHTML = '';
+        return;
+    }
+
+    const item = EQUIPMENT_BY_ID[equipmentId];
+    rowEl.hidden = false;
+    rowEl.innerHTML = `
+        <img src="${item.image}" alt="${item.name}" loading="lazy">
+        <span>
+            <span class="lightbox-gear-name">${item.name}</span>
+            <span class="lightbox-gear-desc">${item.description}</span>
+        </span>`;
+}
+
+function renderLightboxPanel(image) {
+    const titleEl = document.getElementById('lightbox-title');
+    const captionEl = document.getElementById('lightbox-caption');
+    const gearEl = document.getElementById('lightbox-gear');
+    const cameraRow = document.getElementById('lightbox-gear-camera');
+    const lensRow = document.getElementById('lightbox-gear-lens');
+    const enquiryBtn = document.getElementById('lightbox-enquiry-btn');
+    const enquiryForm = document.getElementById('lightbox-enquiry-form');
+
+    titleEl.hidden = !image.title;
+    titleEl.textContent = image.title || '';
+
+    captionEl.hidden = !image.caption;
+    captionEl.textContent = image.caption || '';
+
+    gearEl.hidden = !image.cameraId;
+    if (image.cameraId) {
+        renderGearRow(cameraRow, image.cameraId);
+        renderGearRow(lensRow, image.lensId);
+    }
+
+    enquiryForm.hidden = true;
+    enquiryForm.reset();
+
+    if (image.enquiryAction && ENQUIRY_LABELS[image.enquiryAction]) {
+        enquiryBtn.hidden = false;
+        enquiryBtn.textContent = pickEnquiryButtonLabel(image.enquiryAction);
+        enquiryBtn.dataset.action = image.enquiryAction;
+    } else {
+        enquiryBtn.hidden = true;
+        delete enquiryBtn.dataset.action;
+    }
+}
+
 function openLightbox(imgName) {
     try {
         currentImageIndex = images.findIndex(img => img.name === imgName);
@@ -142,6 +252,7 @@ function openLightbox(imgName) {
         
         if (lightboxImg && lightbox) {
             lightboxImg.src = images[currentImageIndex].fullSrc;
+            renderLightboxPanel(images[currentImageIndex]);
             lightbox.style.display = "block";
             document.body.style.overflow = "hidden";
             
@@ -172,7 +283,8 @@ function previousImage(event) {
     }
     currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
     document.getElementById("lightbox-img").src = images[currentImageIndex].fullSrc;
-    
+    renderLightboxPanel(images[currentImageIndex]);
+
     const url = new URL(window.location);
     url.searchParams.set("image", images[currentImageIndex].name);
     window.history.pushState({}, "", url);
@@ -184,7 +296,8 @@ function nextImage(event) {
     }
     currentImageIndex = (currentImageIndex + 1) % images.length;
     document.getElementById("lightbox-img").src = images[currentImageIndex].fullSrc;
-    
+    renderLightboxPanel(images[currentImageIndex]);
+
     const url = new URL(window.location);
     url.searchParams.set("image", images[currentImageIndex].name);
     window.history.pushState({}, "", url);
@@ -233,6 +346,69 @@ function preloadAllFullImages() {
     });
 }
 
+function parseMailtoUrl(url) {
+    const withoutScheme = url.replace(/^mailto:/, '');
+    const [address, query] = withoutScheme.split('?');
+    const params = new URLSearchParams(query || '');
+    return {
+        address: address || '',
+        subject: params.get('subject') || '',
+        body: params.get('body') || ''
+    };
+}
+
+function showMailtoFallback(details) {
+    document.getElementById('mailto-fallback-address').textContent = details.address;
+    document.getElementById('mailto-fallback-subject').textContent = details.subject;
+    document.getElementById('mailto-fallback-body').value = details.body;
+    document.getElementById('mailto-fallback').hidden = false;
+}
+
+function closeMailtoFallback() {
+    document.getElementById('mailto-fallback').hidden = true;
+}
+
+// mailto: links don't produce a normal navigation, so there's no error event
+// to hook into when a device has no mail app configured. Instead we watch
+// for the window losing focus (native app took over) or the tab going
+// hidden (a web-based handler like Gmail opened in a new tab) shortly after
+// the click; if neither happens, we assume nothing opened and show the
+// details in a modal so the visitor can copy them by hand.
+function openMailtoWithFallback(url) {
+    const details = parseMailtoUrl(url);
+    let handled = false;
+
+    function markHandled() {
+        handled = true;
+    }
+    function onVisibilityChange() {
+        if (document.hidden) markHandled();
+    }
+
+    window.addEventListener('blur', markHandled);
+    document.addEventListener('visibilitychange', onVisibilityChange);
+
+    window.location.href = url;
+
+    setTimeout(function() {
+        window.removeEventListener('blur', markHandled);
+        document.removeEventListener('visibilitychange', onVisibilityChange);
+        if (!handled) {
+            showMailtoFallback(details);
+        }
+    }, 1500);
+}
+
+function bindMailtoLinks(root) {
+    if (!root) return;
+    root.querySelectorAll('a[href^="mailto:"]').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            openMailtoWithFallback(link.getAttribute('href'));
+        });
+    });
+}
+
 document.getElementById("lightbox").addEventListener("click", function(event) {
     const lightboxContent = document.querySelector(".lightbox-content");
     if (event.target === lightboxContent) {
@@ -242,7 +418,58 @@ document.getElementById("lightbox").addEventListener("click", function(event) {
     }
 });
 
+document.getElementById("lightbox-enquiry-btn").addEventListener("click", function(event) {
+    event.stopPropagation();
+    const form = document.getElementById("lightbox-enquiry-form");
+    form.hidden = !form.hidden;
+});
+
+document.getElementById("lightbox-enquiry-form").addEventListener("click", function(event) {
+    event.stopPropagation();
+});
+
+document.getElementById("lightbox-enquiry-form").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const form = event.target;
+    const image = images[currentImageIndex] || {};
+    const action = document.getElementById("lightbox-enquiry-btn").dataset.action || '';
+    const camera = EQUIPMENT_BY_ID[image.cameraId] ? EQUIPMENT_BY_ID[image.cameraId].name : '';
+    const lens = EQUIPMENT_BY_ID[image.lensId] ? EQUIPMENT_BY_ID[image.lensId].name : '';
+
+    form.photoId.value = image.name || '';
+    form.page.value = currentPage;
+    form.enquiryAction.value = action;
+    form.camera.value = camera;
+    form.lens.value = lens;
+
+    const subject = `Enquiry: ${ENQUIRY_LABELS[action] || 'Photo enquiry'} (${image.name || ''})`;
+    const bodyLines = [
+        `Name: ${form.name.value}`,
+        `Email: ${form.email.value}`,
+        `Phone: ${form.phone.value}`,
+        '',
+        form.message.value,
+        '',
+        '---',
+        `Photo: ${image.name || ''}`,
+        `Page: ${currentPage}`,
+        `Action: ${action}`,
+        `Camera: ${camera}`,
+        `Lens: ${lens || 'n/a'}`
+    ];
+
+    const mailtoUrl = `mailto:hello@plushka.se?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines.join('\n'))}`;
+    openMailtoWithFallback(mailtoUrl);
+});
+
 document.addEventListener("keydown", function(event) {
+    const mailtoFallback = document.getElementById("mailto-fallback");
+    if (mailtoFallback && !mailtoFallback.hidden && event.key === "Escape") {
+        closeMailtoFallback();
+        return;
+    }
+
     const lightbox = document.getElementById("lightbox");
     if (lightbox && lightbox.style.display === "block") {
         if (event.key === "Escape" || event.key === "ArrowLeft" || event.key === "ArrowRight") {
@@ -265,6 +492,29 @@ document.addEventListener("keydown", function(event) {
 
 window.addEventListener("load", function() {
     preloadAllSiteImages();
+
+    bindMailtoLinks(document.querySelector('.footer'));
+
+    document.querySelector('.mailto-fallback-close').addEventListener('click', closeMailtoFallback);
+    document.querySelector('.mailto-fallback-backdrop').addEventListener('click', closeMailtoFallback);
+
+    document.getElementById('mailto-fallback-copy').addEventListener('click', function() {
+        const address = document.getElementById('mailto-fallback-address').textContent;
+        const subject = document.getElementById('mailto-fallback-subject').textContent;
+        const body = document.getElementById('mailto-fallback-body').value;
+        const text = `To: ${address}\nSubject: ${subject}\n\n${body}`;
+        const btn = this;
+
+        navigator.clipboard.writeText(text).then(function() {
+            const original = btn.textContent;
+            btn.textContent = 'Copied!';
+            btn.classList.add('mailto-fallback-copied');
+            setTimeout(function() {
+                btn.textContent = original;
+                btn.classList.remove('mailto-fallback-copied');
+            }, 1500);
+        });
+    });
     
     document.querySelectorAll('a[data-page]').forEach(link => {
         link.addEventListener('click', function(e) {
@@ -274,15 +524,15 @@ window.addEventListener("load", function() {
     });
     
     window.addEventListener('hashchange', function() {
-        const hash = window.location.hash.slice(1);
+        const hash = resolveHash(window.location.hash.slice(1));
         if (pages[hash]) {
             navigateToPage(hash);
         }
     });
-    
 
-    
-    let hash = window.location.hash.slice(1);
+
+
+    let hash = resolveHash(window.location.hash.slice(1));
     if (!hash) {
         const path = window.location.pathname;
         if (path === '/' || path === '/index.html') {
@@ -305,7 +555,7 @@ window.addEventListener("load", function() {
 });
 
 window.addEventListener("popstate", function(event) {
-    let hash = window.location.hash.slice(1);
+    let hash = resolveHash(window.location.hash.slice(1));
     if (!hash) {
         const path = window.location.pathname;
         if (path === '/' || path === '/index.html') {
