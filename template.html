@@ -117,6 +117,28 @@
         </div>
     </div>
 
+    <div id="mailto-fallback" class="mailto-fallback" hidden>
+        <div class="mailto-fallback-backdrop"></div>
+        <div class="mailto-fallback-panel" role="dialog" aria-modal="true" aria-labelledby="mailto-fallback-title">
+            <button type="button" class="mailto-fallback-close" aria-label="Close">&times;</button>
+            <h3 id="mailto-fallback-title">No email app found</h3>
+            <p>It looks like this device doesn't have an email app set up. Please write to us directly:</p>
+            <div class="mailto-fallback-field">
+                <label>To</label>
+                <div class="mailto-fallback-value" id="mailto-fallback-address"></div>
+            </div>
+            <div class="mailto-fallback-field">
+                <label>Subject</label>
+                <div class="mailto-fallback-value" id="mailto-fallback-subject"></div>
+            </div>
+            <div class="mailto-fallback-field">
+                <label>Message</label>
+                <textarea class="mailto-fallback-value mailto-fallback-body" id="mailto-fallback-body" readonly rows="6"></textarea>
+            </div>
+            <button type="button" class="session-btn" id="mailto-fallback-copy">Copy details</button>
+        </div>
+    </div>
+
     <script src="/script.js?v=JS_HASH"></script>
 </body>
 

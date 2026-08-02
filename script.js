@@ -117,6 +117,8 @@ function setupEventListeners() {
             openLightbox(this.dataset.imgName);
         });
     });
+
+    bindMailtoLinks(document.getElementById('page-content'));
 }
 
 let touchStartX = 0;
@@ -344,6 +346,69 @@ function preloadAllFullImages() {
     });
 }
 
+function parseMailtoUrl(url) {
+    const withoutScheme = url.replace(/^mailto:/, '');
+    const [address, query] = withoutScheme.split('?');
+    const params = new URLSearchParams(query || '');
+    return {
+        address: address || '',
+        subject: params.get('subject') || '',
+        body: params.get('body') || ''
+    };
+}
+
+function showMailtoFallback(details) {
+    document.getElementById('mailto-fallback-address').textContent = details.address;
+    document.getElementById('mailto-fallback-subject').textContent = details.subject;
+    document.getElementById('mailto-fallback-body').value = details.body;
+    document.getElementById('mailto-fallback').hidden = false;
+}
+
+function closeMailtoFallback() {
+    document.getElementById('mailto-fallback').hidden = true;
+}
+
+// mailto: links don't produce a normal navigation, so there's no error event
+// to hook into when a device has no mail app configured. Instead we watch
+// for the window losing focus (native app took over) or the tab going
+// hidden (a web-based handler like Gmail opened in a new tab) shortly after
+// the click; if neither happens, we assume nothing opened and show the
+// details in a modal so the visitor can copy them by hand.
+function openMailtoWithFallback(url) {
+    const details = parseMailtoUrl(url);
+    let handled = false;
+
+    function markHandled() {
+        handled = true;
+    }
+    function onVisibilityChange() {
+        if (document.hidden) markHandled();
+    }
+
+    window.addEventListener('blur', markHandled);
+    document.addEventListener('visibilitychange', onVisibilityChange);
+
+    window.location.href = url;
+
+    setTimeout(function() {
+        window.removeEventListener('blur', markHandled);
+        document.removeEventListener('visibilitychange', onVisibilityChange);
+        if (!handled) {
+            showMailtoFallback(details);
+        }
+    }, 1500);
+}
+
+function bindMailtoLinks(root) {
+    if (!root) return;
+    root.querySelectorAll('a[href^="mailto:"]').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            openMailtoWithFallback(link.getAttribute('href'));
+        });
+    });
+}
+
 document.getElementById("lightbox").addEventListener("click", function(event) {
     const lightboxContent = document.querySelector(".lightbox-content");
     if (event.target === lightboxContent) {
@@ -395,10 +460,16 @@ document.getElementById("lightbox-enquiry-form").addEventListener("submit", func
     ];
 
     const mailtoUrl = `mailto:hello@plushka.se?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines.join('\n'))}`;
-    window.location.href = mailtoUrl;
+    openMailtoWithFallback(mailtoUrl);
 });
 
 document.addEventListener("keydown", function(event) {
+    const mailtoFallback = document.getElementById("mailto-fallback");
+    if (mailtoFallback && !mailtoFallback.hidden && event.key === "Escape") {
+        closeMailtoFallback();
+        return;
+    }
+
     const lightbox = document.getElementById("lightbox");
     if (lightbox && lightbox.style.display === "block") {
         if (event.key === "Escape" || event.key === "ArrowLeft" || event.key === "ArrowRight") {
@@ -421,6 +492,29 @@ document.addEventListener("keydown", function(event) {
 
 window.addEventListener("load", function() {
     preloadAllSiteImages();
+
+    bindMailtoLinks(document.querySelector('.footer'));
+
+    document.querySelector('.mailto-fallback-close').addEventListener('click', closeMailtoFallback);
+    document.querySelector('.mailto-fallback-backdrop').addEventListener('click', closeMailtoFallback);
+
+    document.getElementById('mailto-fallback-copy').addEventListener('click', function() {
+        const address = document.getElementById('mailto-fallback-address').textContent;
+        const subject = document.getElementById('mailto-fallback-subject').textContent;
+        const body = document.getElementById('mailto-fallback-body').value;
+        const text = `To: ${address}\nSubject: ${subject}\n\n${body}`;
+        const btn = this;
+
+        navigator.clipboard.writeText(text).then(function() {
+            const original = btn.textContent;
+            btn.textContent = 'Copied!';
+            btn.classList.add('mailto-fallback-copied');
+            setTimeout(function() {
+                btn.textContent = original;
+                btn.classList.remove('mailto-fallback-copied');
+            }, 1500);
+        });
+    });
     
     document.querySelectorAll('a[data-page]').forEach(link => {
         link.addEventListener('click', function(e) {
