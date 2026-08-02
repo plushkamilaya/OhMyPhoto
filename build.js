@@ -43,6 +43,23 @@ function buildMailtoHref(lang) {
     return `mailto:${contact.address}?subject=${subject}&body=${body}`;
 }
 
+// Same hello@plushka.se inbox as buildMailtoHref, but pre-filled for a
+// specific session card: subject names the session, body has a one-line
+// greeting followed by fields to fill in (date/location/name/comment).
+function buildSessionMailtoHref(lang, sessionHeading) {
+    const contact = CONTACT_MAILTO[lang] || CONTACT_MAILTO.en;
+    const sessionName = sessionHeading.replace(/Sessions$/, 'Session');
+    const subject = lang === 'sv' ? `Förfrågan om ${sessionName}` : `Request for ${sessionName}`;
+    const greeting = lang === 'sv'
+        ? 'Hej, jag vill boka en fotosession — här är mina uppgifter:'
+        : 'Hi, I\'d like to book a photo session — here are my details:';
+    const fields = lang === 'sv'
+        ? 'Datum: \nPlats: \nNamn: \nLite om hur jag ser sessionen framför mig (frivilligt): '
+        : 'Date: \nLocation: \nName: \nA little about how I imagine the session (optional): ';
+    const body = `${greeting}\n\n${fields}`;
+    return `mailto:${contact.address}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
 function imgSrc(image) {
     return typeof image === 'string' ? image : image.src;
 }
@@ -407,11 +424,17 @@ function generateSessionsSplitHTML(page) {
 
     const buttons = options.map(option => {
         const modifier = option.id ? ` session-btn--${option.id.replace(/-sessions$/, '')}` : '';
+        const meta = (option.duration || option.price) ? `
+                        <span class="session-btn-meta">
+                            <span class="session-btn-duration">${option.duration || ''}</span>
+                            <span class="session-btn-price">${option.price || ''}</span>
+                        </span>` : '';
+        const href = buildSessionMailtoHref('en', option.heading);
         return `
-                    <button type="button" class="session-btn${modifier}">
-                        <span class="session-btn-title">${option.heading}</span>
+                    <a href="${href}" class="session-btn${modifier}">
+                        <span class="session-btn-title">${option.heading}</span>${meta}
                         <span class="session-btn-desc">${option.description}</span>
-                    </button>`;
+                    </a>`;
     }).join('');
 
     return `
@@ -769,6 +792,12 @@ async function build() {
             fs.copyFileSync(file, path.join(buildDir, file));
         }
     });
+
+    // Hover artwork and other non-photo UI assets are served unchanged.
+    const assetsDir = './assets';
+    if (fs.existsSync(assetsDir)) {
+        fs.cpSync(assetsDir, path.join(buildDir, 'assets'), { recursive: true });
+    }
 
     console.log('Build completed!');
 }
