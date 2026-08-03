@@ -43,23 +43,6 @@ function buildMailtoHref(lang) {
     return `mailto:${contact.address}?subject=${subject}&body=${body}`;
 }
 
-// Same hello@plushka.se inbox as buildMailtoHref, but pre-filled for a
-// specific session card: subject names the session, body has a one-line
-// greeting followed by fields to fill in (date/location/name/comment).
-function buildSessionMailtoHref(lang, sessionHeading) {
-    const contact = CONTACT_MAILTO[lang] || CONTACT_MAILTO.en;
-    const sessionName = sessionHeading.replace(/Sessions$/, 'Session');
-    const subject = lang === 'sv' ? `Förfrågan om ${sessionName}` : `Request for ${sessionName}`;
-    const greeting = lang === 'sv'
-        ? 'Hej, jag vill boka en fotosession — här är mina uppgifter:'
-        : 'Hi, I\'d like to book a photo session — here are my details:';
-    const fields = lang === 'sv'
-        ? 'Datum: \nPlats: \nNamn: \nLite om hur jag ser sessionen framför mig (frivilligt): '
-        : 'Date: \nLocation: \nName: \nA little about how I imagine the session (optional): ';
-    const body = `${greeting}\n\n${fields}`;
-    return `mailto:${contact.address}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-}
-
 function imgSrc(image) {
     return typeof image === 'string' ? image : image.src;
 }
@@ -200,13 +183,41 @@ async function processImages() {
 const template = fs.readFileSync('template.html', 'utf8');
 
 function generateGalleryHTML(images, page) {
+    return generateGalleryItems(images, page).join('');
+}
+
+// Returns the per-image HTML strings without joining them, so callers that
+// need to splice extra markup (e.g. session tiles) in among the photos can
+// do so before the final join.
+function generateGalleryItems(images, page) {
     if (!images || images.length === 0) {
-        return '';
+        return [];
     }
 
     const defaultEnquiryAction = DEFAULT_ENQUIRY_ACTION[page.name] || null;
 
-    return images.map(image => {
+    const wideSpans = images.map(image => typeof image.wide === 'number' ? image.wide : (image.wide ? 2 : 0));
+
+    // On mobile the grid collapses to 2 columns and wide items span the full
+    // row; simulate that placement so a regular image left alone in its row
+    // (with an empty cell beside it) can be stretched to fill the gap.
+    const soloMobile = new Array(images.length).fill(false);
+    let pendingIndex = null;
+    wideSpans.forEach((span, index) => {
+        if (span > 1) {
+            if (pendingIndex !== null) {
+                soloMobile[pendingIndex] = true;
+                pendingIndex = null;
+            }
+        } else {
+            pendingIndex = pendingIndex === null ? index : null;
+        }
+    });
+    if (pendingIndex !== null) {
+        soloMobile[pendingIndex] = true;
+    }
+
+    return images.map((image, index) => {
         const src = imgSrc(image);
         const filename = path.basename(src);
         const previewSrc = `${PHOTOS_PATH}/preview_${filename}`;
@@ -217,8 +228,9 @@ function generateGalleryHTML(images, page) {
         const fullHash = fs.existsSync(path.join(buildDir, fullSrc)) ?
             getFileHash(path.join(buildDir, fullSrc)) : '';
 
-        const wideSpan = typeof image.wide === 'number' ? image.wide : (image.wide ? 2 : 0);
+        const wideSpan = wideSpans[index];
         const wideClass = wideSpan > 1 ? ` gallery-item--wide-${wideSpan}` : '';
+        const soloClass = soloMobile[index] ? ' gallery-item--solo-mobile' : '';
 
         const override = (typeof image === 'object' && image.equipmentOverride) || {};
         const cached = equipmentCache.get(filename) || { cameraId: DEFAULT_CAMERA_ID, lensId: null };
@@ -240,10 +252,10 @@ function generateGalleryHTML(images, page) {
         ].join('');
 
         return `
-                <div class="gallery-item${wideClass}">
+                <div class="gallery-item${wideClass}${soloClass}">
                     <img src="${previewSrc}${previewHash ? `?v=${previewHash}` : ''}" data-img-name="${src}" data-full-src="${fullSrc}${fullHash ? `?v=${fullHash}` : ''}"${extraAttrs} alt="${page.title ? page.title + ' photography' : 'Photography'}">
                 </div>`;
-    }).join('');
+    });
 }
 
 const gearDir = './gear';
@@ -418,38 +430,48 @@ function generateGalleryIntroHTML(page) {
             </div>`;
 }
 
+// Renders a Mini/Story Sessions option as a gallery-item tile: it lives
+// inside the same grid as the photos (not a separate sidebar) and opens in
+// the lightbox exactly like a photo does. The tile only needs a stable id
+// in the markup — its title/duration/price/description are looked up
+// client-side from SESSION_TILES (see generateSessionTilesJson) so
+// richly-formatted copy (e.g. containing &nbsp;) doesn't have to survive a
+// round trip through an HTML attribute.
+function generateSessionTileHTML(option) {
+    const shortId = option.id.replace(/-sessions$/, '');
+    const meta = (option.duration || option.price) ? `
+                    <span class="session-btn-meta">
+                        <span class="session-btn-duration">${option.duration || ''}</span>
+                        <span class="session-btn-price">${option.price || ''}</span>
+                    </span>` : '';
+    return `
+                <div class="gallery-item gallery-item--session session-tile session-btn session-btn--${shortId}" data-session-id="session-${shortId}" tabindex="0" role="button">
+                    <span class="session-btn-title">${option.heading}</span>${meta}
+                    <span class="session-btn-desc">${option.description}</span>
+                </div>`;
+}
+
 function generateSessionsSplitHTML(page) {
     const intro = page.intro || {};
     const options = page.sessionOptions || [];
 
-    const buttons = options.map(option => {
-        const modifier = option.id ? ` session-btn--${option.id.replace(/-sessions$/, '')}` : '';
-        const meta = (option.duration || option.price) ? `
-                        <span class="session-btn-meta">
-                            <span class="session-btn-duration">${option.duration || ''}</span>
-                            <span class="session-btn-price">${option.price || ''}</span>
-                        </span>` : '';
-        const href = buildSessionMailtoHref('en', option.heading);
-        return `
-                    <a href="${href}" class="session-btn${modifier}">
-                        <span class="session-btn-title">${option.heading}</span>${meta}
-                        <span class="session-btn-desc">${option.description}</span>
-                    </a>`;
-    }).join('');
+    const tileItems = options.map(generateSessionTileHTML);
+    const photoItems = generateGalleryItems(page.images, page);
+    // Mini/Story Sessions tiles sit together right after the first 3
+    // photos (4th and 5th items overall), reading as part of the same grid.
+    const gridItems = photoItems.slice(0, 3).concat(tileItems, photoItems.slice(3));
 
     return `
             <div class="about-content" style="gap: 0; padding-top: 40px;">
                 <h2>${intro.heading || page.title}</h2>
             </div>
-            <div class="session-split">
-                <div class="session-gallery gallery-grid">
-                    ${generateGalleryHTML(page.images, page)}
+            <div class="about-content" style="gap: 0;">
+                <div class="intro-description">
+                    ${generateIntroDescriptionHTML(intro.description)}
                 </div>
-                <div class="session-actions">
-                    <div class="session-intro">
-                        ${generateIntroDescriptionHTML(intro.description)}
-                    </div>${buttons}
-                </div>
+            </div>
+            <div class="gallery-grid">
+                ${gridItems.join('')}
             </div>`;
 }
 
@@ -590,6 +612,28 @@ function generateEquipmentCatalogJson() {
     });
 
     return JSON.stringify(catalog, null, 8);
+}
+
+// Client-side lookup for the session tiles embedded in a photo grid (see
+// generateSessionTileHTML): keyed by the same "session-<id>" string used as
+// the tile's data-session-id, so the lightbox can render title/meta/
+// description without threading them through HTML attributes.
+function generateSessionTilesJson() {
+    const tiles = {};
+    pages.forEach(page => {
+        (page.sessionOptions || []).forEach(option => {
+            const shortId = option.id.replace(/-sessions$/, '');
+            tiles[`session-${shortId}`] = {
+                title: option.heading,
+                duration: option.duration || '',
+                price: option.price || '',
+                description: option.description || '',
+                enquiryAction: `book-${shortId}-session`
+            };
+        });
+    });
+
+    return JSON.stringify(tiles, null, 8);
 }
 
 function minifyCSS(inputPath, outputPath) {
@@ -744,6 +788,7 @@ async function build() {
     let script = fs.readFileSync('./script.js', 'utf8');
     script = script.replace(/ALL_SITE_IMAGES/, allSiteImagesJson);
     script = script.replace(/EQUIPMENT_CATALOG_PLACEHOLDER/, generateEquipmentCatalogJson());
+    script = script.replace(/SESSION_TILES_PLACEHOLDER/, generateSessionTilesJson());
 
     const pagesWithContent = pages.map(page => ({
         name: page.name,

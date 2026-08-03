@@ -27,11 +27,19 @@ EQUIPMENT_CATALOG.forEach(item => {
     EQUIPMENT_BY_ID[item.id] = item;
 });
 
+// Keyed by the session tile's data-session-id (see generateSessionTilesJson
+// in build.js) — lets a Mini/Story Sessions tile embedded in a photo grid
+// render its title/meta/description in the lightbox without threading that
+// copy through HTML attributes.
+const SESSION_TILES = SESSION_TILES_PLACEHOLDER;
+
 const ENQUIRY_LABELS = {
     'book-similar-session': 'Book a similar session',
     'request-similar-shoot': 'Request a similar shoot',
     'ask-print': 'Ask about a print',
-    'license-image': 'License this image'
+    'license-image': 'License this image',
+    'book-mini-session': 'Book a Mini Session',
+    'book-story-session': 'Book a Story Session'
 };
 
 const ENQUIRY_BUTTON_VARIANTS = {
@@ -99,22 +107,48 @@ function updateNavigation() {
 }
 
 function updateImages() {
-    images = Array.from(document.querySelectorAll(".gallery-item img, .community-photo img")).map(img => ({
-        src: img.src,
-        fullSrc: img.dataset.fullSrc,
-        name: img.dataset.imgName,
-        cameraId: img.dataset.camera || null,
-        lensId: img.dataset.lens || null,
-        title: img.dataset.title || null,
-        caption: img.dataset.caption || null,
-        enquiryAction: img.dataset.enquiry || null
-    }));
+    images = Array.from(document.querySelectorAll(".gallery-item img, .community-photo img, .session-tile")).map(el => {
+        if (el.classList.contains('session-tile')) {
+            const tile = SESSION_TILES[el.dataset.sessionId] || {};
+            return {
+                name: el.dataset.sessionId,
+                isSession: true,
+                title: tile.title || '',
+                duration: tile.duration || '',
+                price: tile.price || '',
+                description: tile.description || '',
+                enquiryAction: tile.enquiryAction || null
+            };
+        }
+        return {
+            src: el.src,
+            fullSrc: el.dataset.fullSrc,
+            name: el.dataset.imgName,
+            cameraId: el.dataset.camera || null,
+            lensId: el.dataset.lens || null,
+            title: el.dataset.title || null,
+            caption: el.dataset.caption || null,
+            enquiryAction: el.dataset.enquiry || null
+        };
+    });
 }
 
 function setupEventListeners() {
     document.querySelectorAll('.gallery-item img, .community-photo img').forEach(img => {
         img.addEventListener('click', function() {
             openLightbox(this.dataset.imgName);
+        });
+    });
+
+    document.querySelectorAll('.session-tile').forEach(tile => {
+        tile.addEventListener('click', function() {
+            openLightbox(this.dataset.sessionId);
+        });
+        tile.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                openLightbox(this.dataset.sessionId);
+            }
         });
     });
 
@@ -216,12 +250,24 @@ function renderLightboxPanel(image) {
     const lensRow = document.getElementById('lightbox-gear-lens');
     const enquiryBtn = document.getElementById('lightbox-enquiry-btn');
     const enquiryForm = document.getElementById('lightbox-enquiry-form');
+    const sessionMetaEl = document.getElementById('lightbox-session-meta');
+    const sessionDurationEl = document.getElementById('lightbox-session-duration');
+    const sessionPriceEl = document.getElementById('lightbox-session-price');
 
     titleEl.hidden = !image.title;
     titleEl.textContent = image.title || '';
 
-    captionEl.hidden = !image.caption;
-    captionEl.textContent = image.caption || '';
+    if (image.isSession) {
+        captionEl.hidden = !image.description;
+        captionEl.innerHTML = image.description || '';
+    } else {
+        captionEl.hidden = !image.caption;
+        captionEl.textContent = image.caption || '';
+    }
+
+    sessionMetaEl.hidden = !image.isSession || (!image.duration && !image.price);
+    sessionDurationEl.textContent = image.isSession ? (image.duration || '') : '';
+    sessionPriceEl.textContent = image.isSession ? (image.price || '') : '';
 
     gearEl.hidden = !image.cameraId;
     if (image.cameraId) {
@@ -234,7 +280,7 @@ function renderLightboxPanel(image) {
 
     if (image.enquiryAction && ENQUIRY_LABELS[image.enquiryAction]) {
         enquiryBtn.hidden = false;
-        enquiryBtn.textContent = pickEnquiryButtonLabel(image.enquiryAction);
+        enquiryBtn.textContent = image.isSession ? ENQUIRY_LABELS[image.enquiryAction] : pickEnquiryButtonLabel(image.enquiryAction);
         enquiryBtn.dataset.action = image.enquiryAction;
     } else {
         enquiryBtn.hidden = true;
@@ -242,20 +288,38 @@ function renderLightboxPanel(image) {
     }
 }
 
+// Photo slides show the image beside a side panel (title/gear/enquiry);
+// session-tile slides (Mini/Story Sessions, embedded among the photos) have
+// no image at all, so the same panel is re-styled (see .lightbox--session in
+// styles.css) into centered text over the content area instead.
+function renderLightboxSlide(image) {
+    const lightboxImg = document.getElementById('lightbox-img');
+    const lightbox = document.getElementById('lightbox');
+
+    lightbox.classList.toggle('lightbox--session', !!image.isSession);
+    if (image.isSession) {
+        lightboxImg.style.display = 'none';
+        lightboxImg.removeAttribute('src');
+    } else {
+        lightboxImg.style.display = '';
+        lightboxImg.src = image.fullSrc;
+    }
+    renderLightboxPanel(image);
+}
+
 function openLightbox(imgName) {
     try {
         currentImageIndex = images.findIndex(img => img.name === imgName);
         if (currentImageIndex === -1) return;
-        
+
         const lightboxImg = document.getElementById("lightbox-img");
         const lightbox = document.getElementById("lightbox");
-        
+
         if (lightboxImg && lightbox) {
-            lightboxImg.src = images[currentImageIndex].fullSrc;
-            renderLightboxPanel(images[currentImageIndex]);
+            renderLightboxSlide(images[currentImageIndex]);
             lightbox.style.display = "block";
             document.body.style.overflow = "hidden";
-            
+
             setupLightboxTouchEvents();
             setupLightboxDoubleTap();
             
@@ -282,8 +346,7 @@ function previousImage(event) {
         event.stopPropagation();
     }
     currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
-    document.getElementById("lightbox-img").src = images[currentImageIndex].fullSrc;
-    renderLightboxPanel(images[currentImageIndex]);
+    renderLightboxSlide(images[currentImageIndex]);
 
     const url = new URL(window.location);
     url.searchParams.set("image", images[currentImageIndex].name);
@@ -295,8 +358,7 @@ function nextImage(event) {
         event.stopPropagation();
     }
     currentImageIndex = (currentImageIndex + 1) % images.length;
-    document.getElementById("lightbox-img").src = images[currentImageIndex].fullSrc;
-    renderLightboxPanel(images[currentImageIndex]);
+    renderLightboxSlide(images[currentImageIndex]);
 
     const url = new URL(window.location);
     url.searchParams.set("image", images[currentImageIndex].name);
@@ -434,16 +496,19 @@ document.getElementById("lightbox-enquiry-form").addEventListener("submit", func
     const form = event.target;
     const image = images[currentImageIndex] || {};
     const action = document.getElementById("lightbox-enquiry-btn").dataset.action || '';
-    const camera = EQUIPMENT_BY_ID[image.cameraId] ? EQUIPMENT_BY_ID[image.cameraId].name : '';
-    const lens = EQUIPMENT_BY_ID[image.lensId] ? EQUIPMENT_BY_ID[image.lensId].name : '';
+    const camera = !image.isSession && EQUIPMENT_BY_ID[image.cameraId] ? EQUIPMENT_BY_ID[image.cameraId].name : '';
+    const lens = !image.isSession && EQUIPMENT_BY_ID[image.lensId] ? EQUIPMENT_BY_ID[image.lensId].name : '';
 
-    form.photoId.value = image.name || '';
+    form.photoId.value = image.isSession ? '' : (image.name || '');
     form.page.value = currentPage;
     form.enquiryAction.value = action;
     form.camera.value = camera;
     form.lens.value = lens;
 
-    const subject = `Enquiry: ${ENQUIRY_LABELS[action] || 'Photo enquiry'} (${image.name || ''})`;
+    const subject = image.isSession
+        ? `Enquiry: ${ENQUIRY_LABELS[action] || image.title || 'Session enquiry'}`
+        : `Enquiry: ${ENQUIRY_LABELS[action] || 'Photo enquiry'} (${image.name || ''})`;
+
     const bodyLines = [
         `Name: ${form.name.value}`,
         `Email: ${form.email.value}`,
@@ -451,13 +516,19 @@ document.getElementById("lightbox-enquiry-form").addEventListener("submit", func
         '',
         form.message.value,
         '',
-        '---',
-        `Photo: ${image.name || ''}`,
-        `Page: ${currentPage}`,
-        `Action: ${action}`,
-        `Camera: ${camera}`,
-        `Lens: ${lens || 'n/a'}`
+        '---'
     ];
+    if (image.isSession) {
+        bodyLines.push(`Session: ${image.title || ''}`, `Page: ${currentPage}`, `Action: ${action}`);
+    } else {
+        bodyLines.push(
+            `Photo: ${image.name || ''}`,
+            `Page: ${currentPage}`,
+            `Action: ${action}`,
+            `Camera: ${camera}`,
+            `Lens: ${lens || 'n/a'}`
+        );
+    }
 
     const mailtoUrl = `mailto:hello@plushka.se?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines.join('\n'))}`;
     openMailtoWithFallback(mailtoUrl);
