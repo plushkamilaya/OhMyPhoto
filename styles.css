@@ -208,16 +208,30 @@ body {
 }
 
 @media (max-width: 768px) {
-    .intro-description-item:nth-child(1) {
-        order: 2;
+    /* For Business only (the sole 3-paragraph intro-description): unwrap
+       the first item so its paragraph and "Write to us" button can be
+       ordered independently — paragraphs stay in their natural order, but
+       the button moves below all three instead of sitting right under the
+       first one. */
+    .intro-description-item:first-child:nth-last-child(3) {
+        display: contents;
+    }
+
+    .intro-description-item:first-child:nth-last-child(3) p {
+        order: 1;
     }
 
     .intro-description-item:nth-child(2) {
-        order: 1;
+        order: 2;
     }
 
     .intro-description-item:nth-child(3) {
         order: 3;
+    }
+
+    .intro-description-item:first-child:nth-last-child(3) .cta-link {
+        order: 4;
+        margin-top: 4px;
     }
 }
 
