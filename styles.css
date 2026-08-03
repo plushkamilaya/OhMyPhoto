@@ -565,51 +565,17 @@ body {
 }
 
 /* Session-tile slides (Mini/Story Sessions, opened from the gallery grid
-   like a photo) have no image — the photo/gear side panel is instead
-   re-centered as a floating card over the whole lightbox, keeping the
-   prev/next arrows (children of .lightbox-content, which still spans the
-   full width once .lightbox-panel is taken out of the flex flow). */
-.lightbox--session .lightbox-panel {
-    position: absolute;
-    inset: 0;
-    margin: auto;
-    width: min(90vw, 480px);
-    height: fit-content;
-    max-height: 85vh;
-    flex: none;
-    max-width: none;
-    border-left: none;
-    border-radius: 16px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-}
-
-.lightbox--session .lightbox-title,
-.lightbox--session .lightbox-caption,
-.lightbox--session .lightbox-session-meta {
-    width: 100%;
-}
-
-.lightbox--session .lightbox-title {
-    font-size: 26px;
-}
-
-.lightbox--session .lightbox-enquiry-btn {
-    max-width: 320px;
-}
-
-.lightbox--session .lightbox-enquiry-form {
-    width: 100%;
-    max-width: 320px;
-    text-align: left;
+   like a photo) have no image — the window is otherwise identical to a
+   regular photo's (same side panel, same enquiry button), just with a
+   plain white content area standing in for the photo and no gear section
+   (already hidden since these entries have no cameraId). */
+.lightbox--session .lightbox-content {
+    background-color: #fff;
 }
 
 .lightbox-session-meta {
     display: flex;
     align-items: baseline;
-    justify-content: center;
     gap: 12px;
     margin-bottom: 14px;
 }
