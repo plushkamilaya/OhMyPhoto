@@ -288,15 +288,42 @@ function renderLightboxPanel(image) {
     }
 }
 
+// For a session-tile slide, the title/meta/description move into the
+// content area (where the photo would normally sit) so they read as the
+// thing "in place of the photo"; for a regular photo they move back into
+// their usual spot in the side panel, right before the gear section. Safe
+// to call on every render regardless of where they currently are.
+function placeSessionInfo(isSession) {
+    const titleEl = document.getElementById('lightbox-title');
+    const metaEl = document.getElementById('lightbox-session-meta');
+    const captionEl = document.getElementById('lightbox-caption');
+
+    if (isSession) {
+        const content = document.querySelector('.lightbox-content');
+        content.appendChild(titleEl);
+        content.appendChild(metaEl);
+        content.appendChild(captionEl);
+    } else {
+        const panel = document.getElementById('lightbox-panel');
+        const gearEl = document.getElementById('lightbox-gear');
+        panel.insertBefore(titleEl, gearEl);
+        panel.insertBefore(metaEl, gearEl);
+        panel.insertBefore(captionEl, gearEl);
+    }
+}
+
 // Photo slides show the image beside a side panel (title/gear/enquiry);
 // session-tile slides (Mini/Story Sessions, embedded among the photos) have
-// no image at all, so the same panel is re-styled (see .lightbox--session in
-// styles.css) into centered text over the content area instead.
+// no image at all — the side panel is left holding just the enquiry
+// button, and the title/meta/description appear instead as centered text
+// on a plain white background standing in for the photo (see
+// .lightbox--session in styles.css).
 function renderLightboxSlide(image) {
     const lightboxImg = document.getElementById('lightbox-img');
     const lightbox = document.getElementById('lightbox');
 
     lightbox.classList.toggle('lightbox--session', !!image.isSession);
+    placeSessionInfo(!!image.isSession);
     if (image.isSession) {
         lightboxImg.style.display = 'none';
         lightboxImg.removeAttribute('src');

@@ -566,11 +566,29 @@ body {
 
 /* Session-tile slides (Mini/Story Sessions, opened from the gallery grid
    like a photo) have no image — the window is otherwise identical to a
-   regular photo's (same side panel, same enquiry button), just with a
-   plain white content area standing in for the photo and no gear section
-   (already hidden since these entries have no cameraId). */
+   regular photo's (same side panel, same enquiry button). The title/meta/
+   description move (see placeSessionInfo in script.js) into the content
+   area, centered on a plain white background standing in for the photo;
+   the side panel is left holding just the enquiry button, and the gear
+   section stays hidden as before since these entries have no cameraId. */
 .lightbox--session .lightbox-content {
     background-color: #fff;
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+    padding: 40px;
+    box-sizing: border-box;
+}
+
+.lightbox--session .lightbox-content .lightbox-title,
+.lightbox--session .lightbox-content .lightbox-session-meta,
+.lightbox--session .lightbox-content .lightbox-caption {
+    width: 100%;
+    max-width: 480px;
+}
+
+.lightbox--session .lightbox-content .lightbox-session-meta {
+    justify-content: center;
 }
 
 .lightbox-session-meta {
