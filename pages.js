@@ -73,14 +73,21 @@ const pages = [
                 heading: 'Mini Sessions',
                 duration: '15 min',
                 price: '500 SEK',
-                description: 'A&nbsp;few beautiful portraits — of&nbsp;you, your pet, your child, or all together. Quick to&nbsp;do, and easy to&nbsp;fit in&nbsp;while you\'re out for a&nbsp;walk.'
+                description: [
+                    'A&nbsp;few beautiful portraits — of&nbsp;you, your pet, your child, or all together. Quick to&nbsp;do, and easy to&nbsp;fit in&nbsp;while you\'re out for a&nbsp;walk.',
+                    'It\'s so&nbsp;easy!'
+                ]
             },
             {
                 id: 'story-sessions',
                 heading: 'Story Sessions',
                 duration: '1.5–2 hours',
                 price: '2000 SEK',
-                description: 'A&nbsp;longer session, giving everyone time to&nbsp;relax and get used to&nbsp;the camera, with room for a&nbsp;wider variety of&nbsp;shots. We can choose the&nbsp;location together, or&nbsp;I can come to&nbsp;you at&nbsp;home (in&nbsp;Täby and nearby) and help with outfit choices too. By the&nbsp;end we usually come away with not just lovely, polished portraits (maybe with a&nbsp;hint of&nbsp;suspicion from the&nbsp;little ones!) but wonderfully natural expressions too — often alongside charmingly dirty faces and clothes by&nbsp;then. It\'s so&nbsp;sweet.'
+                description: [
+                    'A&nbsp;longer session, giving everyone time to&nbsp;relax and get used to&nbsp;the camera, with room for a&nbsp;wider variety of&nbsp;shots.',
+                    'By the&nbsp;end we usually come away with not just lovely, polished portraits (maybe with a&nbsp;hint of&nbsp;suspicion from the&nbsp;little ones!) but wonderfully natural expressions too — often alongside charmingly dirty faces and clothes by&nbsp;then.',
+                    'It\'s so&nbsp;sweet.'
+                ]
             }
         ]
     },

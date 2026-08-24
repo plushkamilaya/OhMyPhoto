@@ -430,6 +430,15 @@ function generateGalleryIntroHTML(page) {
             </div>`;
 }
 
+// A session option's description can be a single string or an array of
+// paragraphs (e.g. Story Sessions' longer copy); this renders either as
+// one or more <p> tags so it's readable both on the grid tile and in the
+// lightbox caption.
+function formatSessionDescriptionHTML(description) {
+    const paragraphs = Array.isArray(description) ? description : [description || ''];
+    return paragraphs.map(paragraph => `<p>${paragraph}</p>`).join('');
+}
+
 // Renders a Mini/Story Sessions option as a gallery-item tile: it lives
 // inside the same grid as the photos (not a separate sidebar) and opens in
 // the lightbox exactly like a photo does. The tile only needs a stable id
@@ -447,7 +456,7 @@ function generateSessionTileHTML(option) {
     return `
                 <div class="gallery-item gallery-item--session session-tile session-btn session-btn--${shortId}" data-session-id="session-${shortId}" tabindex="0" role="button">
                     <span class="session-btn-title">${option.heading}</span>${meta}
-                    <span class="session-btn-desc">${option.description}</span>
+                    <div class="session-btn-desc">${formatSessionDescriptionHTML(option.description)}</div>
                 </div>`;
 }
 
@@ -627,7 +636,7 @@ function generateSessionTilesJson() {
                 title: option.heading,
                 duration: option.duration || '',
                 price: option.price || '',
-                description: option.description || '',
+                description: formatSessionDescriptionHTML(option.description),
                 enquiryAction: `book-${shortId}-session`
             };
         });

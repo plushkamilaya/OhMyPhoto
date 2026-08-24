@@ -327,6 +327,29 @@ body {
     opacity: 0.8;
 }
 
+.session-btn-desc p {
+    margin: 0 0 10px;
+}
+
+.session-btn-desc p:last-child {
+    margin-bottom: 0;
+}
+
+/* Story Sessions' description only overflows a single grid column's fixed
+   400px height in the narrow-to-mid part of the 4-column desktop range —
+   below that the grid is already 2 columns and wide enough, above it a
+   single column has enough width for the text to fit within 400px on its
+   own. The exact wrap point shifts a bit with font rendering, so the cutoff
+   below carries a wide safety margin rather than the tightest pixel that
+   happened to fit in one test. Spanning 2 columns in that band keeps the
+   row's photos at a tight fit without a background gap, while leaving the
+   tile at its normal width everywhere else. */
+@media (min-width: 769px) and (max-width: 1199px) {
+    .session-btn--story {
+        grid-column: span 2;
+    }
+}
+
 /* Photo hover: only on devices with real hover, so touch keeps the
    plain dark-invert press state above instead of a stuck animation. */
 @media (hover: hover) and (pointer: fine) {
@@ -706,6 +729,14 @@ body {
     line-height: 1.7;
     color: #666;
     margin-bottom: 20px;
+}
+
+.lightbox-caption p {
+    margin: 0 0 12px;
+}
+
+.lightbox-caption p:last-child {
+    margin-bottom: 0;
 }
 
 .lightbox-gear {
